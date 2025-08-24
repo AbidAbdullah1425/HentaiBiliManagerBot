@@ -9,7 +9,7 @@ from datetime import datetime
 import pyrogram.utils
 pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
-from config import API_HASH, APP_ID, LOGGER, TG_BOT_TOKEN, TG_BOT_WORKERS, CHANNEL_ID, PORT
+from config import API_HASH, APP_ID, LOGGER, TG_BOT_TOKEN, TG_BOT_WORKERS, DB_CHANNEL_ID, PORT
 
 class Bot(Client):
     def __init__(self):
@@ -31,14 +31,14 @@ class Bot(Client):
         self.uptime = datetime.now()
 
         try:
-            db_channel = await self.get_chat(CHANNEL_ID)
+            db_channel = await self.get_chat(DB_CHANNEL_ID)
             self.db_channel = db_channel
             test = await self.send_message(chat_id=db_channel.id, text="Test Message")
             await test.delete()
         except Exception as e:
             self.LOGGER(__name__).warning(e)
-            self.LOGGER(__name__).warning(f"Make sure the bot is an Admin in the DB Channel, and double-check the CHANNEL_ID value. Current value: {CHANNEL_ID}")
-            self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/weebs_support for support")
+            self.LOGGER(__name__).warning(f"Make sure the bot is an Admin in the DB Channel, and double-check the CHANNEL_ID value. Current value: {DB_CHANNEL_ID}")
+            self.LOGGER(__name__).info("\nBot Stopped. Join https://t.me/weebs_support or CodexBot for support")
             sys.exit()
 
         self.set_parse_mode(ParseMode.HTML)

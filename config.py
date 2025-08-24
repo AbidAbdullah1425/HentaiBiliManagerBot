@@ -10,7 +10,7 @@ from logging.handlers import RotatingFileHandler
 
 
 #Bot token @Botfather
-TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "0")
+TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "8096490002:AAFcF2MAGewjfRdgw4fXop99aEWsYZXrQUs")
 
 #Your API ID from my.telegram.org
 APP_ID = int(os.environ.get("APP_ID", "26254064"))
@@ -29,9 +29,11 @@ OWNER_ID = int(os.environ.get("OWNER_ID", "5296584067"))
 DB_CHANNEL_ID = int(os.environ.get("DB_CHANNEL_ID", "-1002689479503"))
 POST_CHANNEL_ID = int(os.environ.get("POST_CHANNEL_ID", "-1002372552947"))
 BOT_USERNAME = os.environ.get("BOT_USERNAME", "Goddo_YatoBot")
-CREDIT = os.environ.get("CREDIT", "<b>💣 ~ <a href='tg://user?id={OWNER_ID}'>OnlyNoco</a></b>)
-DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "/tmp")
-CNL_BUTTON_NAME = os.environ.get("CNL_BUTTON_NAME", "📺 Watch / Download)
+CREDIT = os.environ.get("CREDIT", "<b>💣 ~ <a href='tg://user?id={OWNER_ID}'>OnlyNoco</a></b>")
+DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "/download")
+CNL_BUTTON_NAME = os.environ.get("CNL_BUTTON_NAME", "📺 Watch / Download")
+
+DOWNLOAD_DIR = os.path.expanduser("~/HNTBOTR/downloads") # for termux
 
 
 

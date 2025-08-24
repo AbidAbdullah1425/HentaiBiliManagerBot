@@ -1,9 +1,10 @@
 import base64
+from pyrogram import Client
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from config import BOT_USERNAME
 
 
-async encode(text: str) -> str:
+async def encode(text: str) -> str:
   return base64.urlsafe_b64encode(text.encode()).decode
 
 

@@ -27,20 +27,43 @@ async def post_command(Client, message):
     d_link = link[1] #direct link
     filename = f"HENTAIBILI - [{gen_filename()}]"
     filepath = os.path.join(DOWNLOAD_DIR, filename)
-    dl_status = await download(d_link, filename, message) #call for download with progbar
-    if dl_status:
-      up_status = await upload(filepath, CREDIT, message) # call for upload 
-      if up_status:
-        link_generation = await link_gen(DB_CHANNEL_ID, send_video) # call for the link gen 
-        #here now create the post but first export thumb from the vid
-      else:
-        await message.reply_text(f"Upload Error {e}")
-    else: 
-      await message.reply_text(f"Download Failed {e}")
     
-  else:
-    ERROR_MSG = await message.reply_text("No Link Found! Try Again :(", quote=True) 
-
+    try:
+      dl_status = await download(d_link, filename, message) #call for download with progbar
+    except Exception as e:
+      await message.reply_text(f"Download Failed {e}")
+    else:
+      if dl_status:
+        try:
+          up_status = await upload(filepath, CREDIT, message) # call for upload 
+        except Exception as e:
+          await message.reply_text(f"Upload Error {e}")
+        else:
+          if up_status:
+            link_generation = await link_gen(DB_CHANNEL_ID, send_video) # call for the link gen
+          else:
+            await message.reply_text(f"Upload Failed & Link Gen Stopped!") 
+      else:
+        await message.reply_text(f"Download Failed & Next Funcs Stopped!")
+        
+ #    try:
+#       dl_status = await download(d_link, filename, message) #call for download with progbar
+#       if dl_status:
+#         up_status = await upload(filepath, CREDIT, message) # call for upload 
+#       else:
+#         await message.reply_text()
+#       try:
+#         if up_status:
+#         link_generation = await link_gen(DB_CHANNEL_ID, send_video) # call for the link gen 
+#         #here now create the post but first export thumb from the vid
+#       except Exception as e:
+#         await message.reply_text(f"Upload Error {e}")
+#     except Exception as e: 
+#       await message.reply_text(f"Download Failed {e}")
+#     
+#   else:
+#     ERROR_MSG = await message.reply_text("No Link Found! Try Again :(", quote=True) 
+# 
 
 
 # generate random id for filename
