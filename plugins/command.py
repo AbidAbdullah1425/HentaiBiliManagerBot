@@ -29,7 +29,7 @@ async def post_command(Client, message):
   
     link = message.text.split() 
     if len(link) <= 1:
-    ERROR_MSG = message.reply_text(
+      ERROR_MSG = message.reply_text(
       "No Link Detected! /POST [DIRECT LINK]",
       quote=True
     )
