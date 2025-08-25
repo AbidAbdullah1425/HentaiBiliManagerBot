@@ -75,7 +75,7 @@ async def post_command(client, message):
    
    # here main channel post logic 
     try:
-      awsit client.send_photo(
+      await client.send_photo(
         chat_id=MAIN_CHANNEL_ID,
         photo=thumbnail_path,
         caption=None,
