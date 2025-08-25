@@ -16,7 +16,7 @@ ERROR_MSG = None
 
 # post command 
 @Bot.on_message(filters.command("POST") & filters.private & filters.user(OWNER_ID))
-async def post_command(Client, message):
+async def post_command(client, message):
   global ERROR_MSG
   
   try:
