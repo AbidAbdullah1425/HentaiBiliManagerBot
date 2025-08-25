@@ -5,6 +5,7 @@ pymongo
 pyromod==1.5
 dnspython
 filetype
+ffprobe
 
 
 
