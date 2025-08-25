@@ -21,10 +21,10 @@ async def post_command(Client, message):
   
   try:
     if ERROR_MSG:
-    try:
-      await ERROR_MSG.delete()
-    except:
-      pass
+      try:
+        await ERROR_MSG.delete()
+      except:
+        pass
     ERROR_MSG = None
   
     link = message.text.split() 
