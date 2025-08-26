@@ -3,7 +3,7 @@ import random
 import string
 import time
 from bot import Bot
-from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID
+from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, MAIN_CHANNEL_ID
 from pyrogram import Client, filters
 from plugins.download import download
 from plugins.upload import upload
@@ -65,7 +65,7 @@ async def post_command(Client, message):
     # link generation logic
     share_link, buttons = await link_gen(db_msg)
     if not share_link:
-      await message.result(f"Failed Link Generation!")
+      await message.reply_text(f"Failed Link Generation!")
       return
     
     # here post name logic
