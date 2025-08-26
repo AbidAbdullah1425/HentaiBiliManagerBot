@@ -17,15 +17,14 @@ async def upload(Bot: Client, filepath, caption, message):
 
       start = time.time()
 
-      def prog(current, total):
-         loop = asyncio.get_event_loop()
-         loop.create_task(progress_bar(
+      async def prog(current, total):
+         await progress_bar(
             current=current,
             total=total,
             start_time=start,
             status="UPLOADING...",
             message=message
-         ))
+         )
 
 
     
@@ -34,8 +33,7 @@ async def upload(Bot: Client, filepath, caption, message):
           video=filepath,
           caption=caption,
           parse_mode="HTML",
-          progress=prog,
-          progress_args=()
+          progress=prog
       )
 
       await message.edit("✌️ Upload Completed")
