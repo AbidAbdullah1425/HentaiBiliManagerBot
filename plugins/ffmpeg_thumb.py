@@ -10,7 +10,7 @@ logger = LOGGER("ffmpeg_py")
 async def generate_video_thumbnail(video_path: str) -> Optional[str]:
     try:
         # Create output filename
-        thumbnail_path = os.path.join("/tmp", f"thumb_{os.path.splitext(os.path.basename(video_path))[0]}.jpg")
+        thumbnail_path = os.path.join("/tmp", f"thumb.jpg")
         
         # Get video duration using ffprobe
         duration_cmd = [
