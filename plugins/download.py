@@ -19,7 +19,7 @@ async def _download(url, filename, message):
           async for chunk in resp.content.iter_chunked(1024 * 256):
             f.write(chunk)
             downloaded += len(chunk) 
-            await progress_bar(downloaded, total, start, status) # CALL FOR THE PROG BAR
+            await progress_bar(downloaded, total, start, status=status) # CALL FOR THE PROG BAR
     kind = filetype.guess(filepath)
     ext = "." + kind.extension if kind else ".mp4"
   
