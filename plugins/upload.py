@@ -15,10 +15,18 @@ async def upload(Bot: Client, filepath, caption, message):
           await message.reply_text(f"File NOT found! {filepath}")
           raise FileNotFoundError(f"File NOT Found {filepath}")
 
+      status_msg = await message.reply_text("📩 Upload Initializing..")
       start = time.time()
 
       def prog(current, total, delay=3.0): # here delay in inbuilt 
-         asyncio.create_task(progress_bar(current, total, start, status="UPLOADING...", message=message, delay=delay))
+         asyncio.create_task(progress_bar(
+            current=current,
+            total=total,
+            start_time=start,
+            status="UPLOADING...",
+            message=status_msg,
+            delay=delay
+         ))
 
 
     
@@ -30,6 +38,10 @@ async def upload(Bot: Client, filepath, caption, message):
           progress=prog,
           progress_args=()
       )
+
+      await status_msg.edit("✌️ Upload Completed")
+
+
       return True, send_vid
     except Exception as e:
         return False, str(e)
