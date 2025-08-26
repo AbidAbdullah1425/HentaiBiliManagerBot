@@ -100,6 +100,19 @@ async def post_command(client, message):
     if not success:
       await message.reply_text(f"Upload Failed! {db_msg}")
       return
+
+
+    # backup file to log channel 
+    try:
+        await client.copy_message(
+            chat_id=LOG_CHANNEL_ID,
+            from_chat_id=db_msg.chat.id,
+            message_id=db.msg.id
+        )
+    except Exception as e:
+        logger.error(f"Failed to create a backup {e}")
+
+
     
     # link generation logic
     share_link, buttons = await link_gen(db_msg)
