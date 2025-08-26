@@ -88,9 +88,9 @@ async def post_command(client, message):
    # cleanups 
     try:
       if os.path.exists(thumbnail_path):
-      os.remove(thumbnail_path)
+        os.remove(thumbnail_path)
       if os.path.exists(result):
-      os.remove(result)
+        os.remove(result)
     except Exception as e:
       await message.reply_text(f"Cleanup Failed! (e)")
     
