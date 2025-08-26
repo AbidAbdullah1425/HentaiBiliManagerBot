@@ -23,8 +23,7 @@ async def upload(Bot: Client, filepath, caption, message):
             total=total,
             start_time=start,
             status="UPLOADING...",
-            message=message,
-            delay=delay
+            message=message
          ))
 
 
