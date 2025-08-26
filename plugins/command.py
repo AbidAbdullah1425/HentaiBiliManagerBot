@@ -74,12 +74,9 @@ async def post_command(client, message):
         )
     except Exception as e:
         pass
-  
-    
-    # make folder if not exists
-    os.makedirs("Assist", exist_ok=True)
+ 
 
-    filename = f"Assist/HENTAIBILI - [{gen_filename()}]"
+    filename = f"HENTAIBILI - [{gen_filename()}]"
 
 
 
