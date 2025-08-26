@@ -3,12 +3,13 @@ import random
 import string
 import time
 from bot import Bot
-from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID
+from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID
 from pyrogram import Client, filters
 from plugins.download import download
 from plugins.upload import upload
 from plugins.link_gen import link_gen
 from plugins.ffmpeg_thumb import generate_video_thumbnail
+from datetime import datetime
 
 
 ERROR_MSG = None
@@ -34,8 +35,37 @@ async def post_command(Client, message):
       quote=True
       )
       return 
-  
+
+
+    try:
+        await message.delete() # delete my input msg
+    except:
+        pass
+    
+
+
+    now = datetime.now()
+    timestamp = now.strftime("%Y-%m-%d %I:%M:%S %p") # 12 hour format : 2025-08-26 02:35:22 PM
+    user = message.from_user.mention
     d_link = link[1] #direct link
+
+
+    log_text = (
+        f"<b>New Upload Found!\n\n</b>"
+        f"At 🕒 Time:{timestamp}\n"
+        f"By {user} (ID: {message.from_user.id})\n"
+        f"Link: {d_link}"
+    )
+
+    try:
+        await Client.send_message(
+            chat_id=LOG_CHANNEL_ID,
+            text=log_text,
+            disable_web_page_preview=True,
+            disable_notification=True # silent msg send no notification
+        )
+  
+    
     filename = f"HENTAIBILI - [{gen_filename()}]"
     filepath = os.path.join(DOWNLOAD_DIR, filename)
     
