@@ -72,7 +72,6 @@ async def post_command(client, message):
   
     
     filename = f"HENTAIBILI - [{gen_filename()}]"
-    filepath = os.path.join(DOWNLOAD_DIR, filename)
 
 
 
@@ -86,7 +85,7 @@ async def post_command(client, message):
     
     # thumbnail generation 
     status_msg = await message.reply_text("🖼️ Generating Thumbnail!")
-    thumbnail_path = await generate_video_thumbnail(filepath)
+    thumbnail_path = await generate_video_thumbnail(result)
     
     if thumbnail_path:
       await status_msg.edit("✅ Thumbnail Generated!")
@@ -96,7 +95,7 @@ async def post_command(client, message):
     
     #Upload logic
     upload_msg = await message.reply_text("📤 Upload Initializing...")
-    success, db_msg = await upload(result, CREDIT, upload_msg)
+    success, db_msg = await upload(client, result, CREDIT, upload_msg)
     if not success:
       await message.reply_text(f"Upload Failed! {result}")
       return
