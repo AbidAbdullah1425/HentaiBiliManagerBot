@@ -15,7 +15,6 @@ async def upload(Bot: Client, filepath, caption, message):
           await message.reply_text(f"File NOT found! {filepath}")
           raise FileNotFoundError(f"File NOT Found {filepath}")
 
-      status_msg = await message.reply_text("📩 Upload Initializing..")
       start = time.time()
 
       def prog(current, total, delay=3.0): # here delay in inbuilt 
@@ -24,7 +23,7 @@ async def upload(Bot: Client, filepath, caption, message):
             total=total,
             start_time=start,
             status="UPLOADING...",
-            message=status_msg,
+            message=message,
             delay=delay
          ))
 
@@ -39,7 +38,7 @@ async def upload(Bot: Client, filepath, caption, message):
           progress_args=()
       )
 
-      await status_msg.edit("✌️ Upload Completed")
+      await message.edit("✌️ Upload Completed")
 
 
       return True, send_vid
