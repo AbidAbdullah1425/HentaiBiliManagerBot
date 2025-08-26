@@ -2,6 +2,10 @@ import os
 import subprocess
 import logging
 from typing import Optional
+from config import LOGGER
+
+logger = LOGGER("ffmpeg_py")
+
 
 async def generate_video_thumbnail(video_path: str) -> Optional[str]:
     try:
