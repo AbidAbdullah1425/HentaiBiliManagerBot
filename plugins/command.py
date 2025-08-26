@@ -3,7 +3,7 @@ import random
 import string
 import time
 from bot import Bot
-from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, MAIN_CHANNEL_ID
+from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID
 from pyrogram import Client, filters
 from plugins.download import download
 from plugins.upload import upload
@@ -76,7 +76,7 @@ async def post_command(Client, message):
     # here main channel post logic 
     try:
       await Client.send_photo(
-        chat_id=MAIN_CHANNEL_ID,
+        chat_id=POST_CHANNEL_ID,
         photo=thumbnail_path,
         caption=None,
         reply_markup=buttons
