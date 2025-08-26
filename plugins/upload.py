@@ -18,7 +18,7 @@ async def upload(Bot: Client, filepath, caption, message):
       start = time.time()
 
       def prog(current, total):
-         loop = asyncio.asyncio.get_event_loop()
+         loop = asyncio.get_event_loop()
          loop.create_task(progress_bar(
             current=current,
             total=total,
