@@ -56,6 +56,8 @@ async def post_command(client, message):
     now = datetime.now(bd_timezone)
     timestamp = now.strftime("%Y-%m-%d %I:%M:%S %p")  # 12-hour format with AM/PM
 
+    
+
 
     log_text = (
         f"> 🕊️ **New Upload Found!**\n\n"
