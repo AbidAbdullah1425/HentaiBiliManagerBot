@@ -5,6 +5,7 @@ import os
 from plugins.progressbar import progress_bar
 import time
 import asyncio
+from pyrogram.enums import ParseMode
 
 
 
@@ -32,7 +33,7 @@ async def upload(Bot: Client, filepath, message):
           chat_id=DB_CHANNEL_ID,
           video=filepath,
           caption=CREDIT,
-          parse_mode="HTML",
+          parse_mode=ParseMode.HTML,
           progress=prog
       )
 
