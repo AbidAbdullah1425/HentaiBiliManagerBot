@@ -29,12 +29,12 @@ async def _download(url, filename, message):
       os.rename(filepath, new_path)
       await message.reply_message(f"FileName: {new_name}") 
    
-    return True
-  except:
-    return False
+    return True, filepath
+  except Exception as e:
+    return False, str(e)
 
 
 
 # wrap the _download so i can call it from anywhere easily
 async def download(url, filename, message):
-  await _download(url, filename, message)
+  return await _download(url, filename, message)
