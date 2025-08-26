@@ -30,7 +30,7 @@ POST_CHANNEL_ID = int(os.environ.get("POST_CHANNEL_ID", "-1002372552947"))
 LOG_CHANNEL_ID = int(os.environ.get("LOG_CHANNEL_ID", "-1002197279542"))
 BOT_USERNAME = os.environ.get("BOT_USERNAME", "Goddo_YatoBot")
 CREDIT = os.environ.get("CREDIT", f"<b><a href='tg://user?id={OWNER_ID}'>OnlyNoco</a></b>\n")
-DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "/Assist")
+DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "/tmp")
 CNL_BUTTON_NAME = os.environ.get("CNL_BUTTON_NAME", "📺 Watch / Download")
 
 #DOWNLOAD_DIR = os.path.expanduser("~/HNTBOTR/downloads") # for termux
