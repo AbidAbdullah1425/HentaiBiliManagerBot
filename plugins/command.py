@@ -12,6 +12,7 @@ from plugins.ffmpeg_thumb import generate_video_thumbnail
 from datetime import datetime
 import logging
 import pytz
+
 from pyrogram.enums import ParseMode
 
 logger = LOGGER("cmnd_py")
@@ -49,12 +50,11 @@ async def post_command(client, message):
         pass
 
 
-    #set bangladesh timezone
+
+    # Set Bangladesh timezone
     bd_timezone = pytz.timezone('Asia/Dhaka')
     now = datetime.now(bd_timezone)
-    timestamp = now.strftime("%Y-%m-%d %I:%M:%S %p") # 12 hour format : 2025-08-26 02:35:22 PM
-    user = message.from_user.mention
-    d_link = link[1] #direct link
+    timestamp = now.strftime("%Y-%m-%d %I:%M:%S %p")  # 12-hour format with AM/PM
 
 
     log_text = (
