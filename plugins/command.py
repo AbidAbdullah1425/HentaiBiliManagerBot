@@ -12,7 +12,7 @@ from plugins.ffmpeg_thumb import generate_video_thumbnail
 from datetime import datetime
 import logging
 import pytz
-from ptrogram.enums import ParseMode
+from pyrogram.enums import ParseMode
 
 logger = LOGGER("cmnd_py")
 
