@@ -57,7 +57,7 @@ async def post_command(Client, message):
       thumbnail_path = "Assist/default_thumb.jpg"
     
     #Upload logic
-    success, db_msg = await upload(filepath, CREDIT, message)
+    success, db_msg = await upload(result, CREDIT, message)
     if not success:
       await message.reply_text(f"Upload Failed! {result}")
       return
