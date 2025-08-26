@@ -8,7 +8,7 @@ from plugins.progressbar import progress_bar
 
 async def _download(url, filename, message):
   try:
-    STATUS = "DOWNLOADING..."
+    status = "DOWNLOADING..."
     start = time.time()
     filepath = os.path.join(DOWNLOAD_DIR, filename)
     async with aiohttp.ClientSession() as session:
@@ -19,7 +19,7 @@ async def _download(url, filename, message):
           async for chunk in resp.content.iter_chunked(1024 * 256):
             f.write(chunk)
             downloaded += len(chunk) 
-            await progress_bar(downloaded, total, start, STATUS) # CALL FOR THE PROG BAR
+            await progress_bar(downloaded, total, start, status) # CALL FOR THE PROG BAR
     kind = filetype.guess(filepath)
     ext = "." + kind.extension if kind else ".mp4"
   
