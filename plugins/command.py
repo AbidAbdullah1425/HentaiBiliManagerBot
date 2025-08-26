@@ -73,7 +73,6 @@ async def post_command(client, message):
     
     filename = f"HENTAIBILI - [{gen_filename()}]"
     filepath = os.path.join(DOWNLOAD_DIR, filename)
-    status_msg = await message.reply_text("🖼️ Generating Thumbnail! ")
 
 
 
