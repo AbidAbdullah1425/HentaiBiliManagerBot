@@ -16,6 +16,11 @@ async def _download(url, filename, message):
         total = int(resp.headers.get("Content-Length", 0))
         downloaded = 0
         with open(filepath, "wb") as f:
+
+          
+          status_msg = await message.reply_text("📩 Download Initializing...")
+
+
           async for chunk in resp.content.iter_chunked(1024 * 256):
             f.write(chunk)
             downloaded += len(chunk) 
@@ -27,7 +32,7 @@ async def _download(url, filename, message):
                 total=total,
                 start_time=start,
                 status=status,
-                message=message
+                message=status_msg
             ) 
 
 
