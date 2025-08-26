@@ -44,7 +44,8 @@ async def _download(url, filename, message):
       new_name = filename + ext 
       new_path = os.path.join(DOWNLOAD_DIR, new_name)
       os.rename(filepath, new_path)
-      await message.reply_text(f"FileName: {new_name}") 
+      filepath = new_path
+      await message.reply_text(f"FileName: {new_name}\nFilePath: {filepath}")
    
     return True, filepath
   except Exception as e:
