@@ -16,6 +16,7 @@ logger = LOGGER("cmnd_py")
 
 
 ERROR_MSG = None
+download_msg = status_msg = upload_msg = None
 
 
 # post command 
@@ -135,6 +136,16 @@ async def post_command(client, message):
    
   except Exception as e:
     await message.reply_text(f"Main Error! {str(e)}")
+
+    
+    # clean up pm indicator msgs
+  finally:
+    for msg in [download_msg, status_msg, upload_msg]:
+      if msg:
+        try:
+            await msg.delete()
+        except:
+            pass
    
 
 # generate random id for filename
