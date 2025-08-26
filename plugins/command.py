@@ -107,7 +107,7 @@ async def post_command(client, message):
         await client.copy_message(
             chat_id=LOG_CHANNEL_ID,
             from_chat_id=db_msg.chat.id,
-            message_id=db.msg.id
+            message_id=db_msg.id
         )
     except Exception as e:
         logger.error(f"Failed to create a backup {e}")
