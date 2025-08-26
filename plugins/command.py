@@ -16,7 +16,7 @@ ERROR_MSG = None
 
 # post command 
 @Bot.on_message(filters.command("POST") & filters.private & filters.user(OWNER_ID))
-async def post_command(client, message):
+async def post_command(Client, message):
   global ERROR_MSG
   
   try:
@@ -25,11 +25,11 @@ async def post_command(client, message):
         await ERROR_MSG.delete()
       except:
         pass
-    ERROR_MSG = None
+      ERROR_MSG = None
   
     link = message.text.split() 
     if len(link) <= 1:
-      ERROR_MSG = message.reply_text(
+      ERROR_MSG = await message.reply_text(
       "No Link Detected! /POST [DIRECT LINK]",
       quote=True
     )
@@ -54,7 +54,7 @@ async def post_command(client, message):
       await status_msg.edit("✅ Thumbnail Generated!")
     else:
       await status_msg.edit("❌ Thumbnail Generation Failed!")
-      thumbnail_path = Assist/default_thumb.jpg
+      thumbnail_path = "Assist/default_thumb.jpg"
     
     #Upload logic
     success, db_msg = await upload(filepath, CREDIT, message)
@@ -73,9 +73,9 @@ async def post_command(client, message):
    
    
    
-   # here main channel post logic 
+    # here main channel post logic 
     try:
-      await client.send_photo(
+      await Client.send_photo(
         chat_id=MAIN_CHANNEL_ID,
         photo=thumbnail_path,
         caption=None,
@@ -92,7 +92,7 @@ async def post_command(client, message):
       if os.path.exists(result):
         os.remove(result)
     except Exception as e:
-      await message.reply_text(f"Cleanup Failed! (e)")
+      await message.reply_text(f"Cleanup Failed! {e}")
     
    
   except Exception as e:
