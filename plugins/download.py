@@ -6,6 +6,8 @@ import aiohttp
 from config import DB_CHANNEL_ID, POST_CHANNEL_ID, DOWNLOAD_DIR, CREDIT, LOGGER
 from plugins.progressbar import progress_bar
 
+logger = LOGGER("download_py")
+
 
 async def _download(url, filename, message):
   try:
@@ -46,7 +48,7 @@ async def _download(url, filename, message):
       new_path = os.path.join(DOWNLOAD_DIR, new_name)
       os.rename(filepath, new_path)
       filepath = new_path
-      await message.reply_text(f"FileName: {new_name}\nFilePath: {filepath}")
+      logger.error(f"FileName: {new_name}\nFilePath: {filepath}")
    
     return True, filepath
   except Exception as e:
