@@ -56,6 +56,11 @@ async def post_command(client, message):
     now = datetime.now(bd_timezone)
     timestamp = now.strftime("%Y-%m-%d %I:%M:%S %p")  # 12-hour format with AM/PM
 
+
+
+    d_link = link[1]
+    user = f"@{message.from_user.username}" if message.from_user.username else message.from_user.first_name
+
     
 
 
