@@ -82,7 +82,7 @@ async def post_command(client, message):
         reply_markup=buttons
       )
     except Exception as e:
-      awsit message.reply_text(f"Send Post Failed! {str(e)}")
+      await message.reply_text(f"Send Post Failed! {str(e)}")
    
    
    # cleanups 
