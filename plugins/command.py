@@ -54,10 +54,10 @@ async def post_command(client, message):
 
 
     log_text = (
-        f"<b>New Upload Found!\n\n</b>"
+        f"<b> 🕊️ New Upload Found!\n\n</b>"
         f"At 🕒 Time:{timestamp}\n"
         f"By {user} (ID: {message.from_user.id})\n"
-        f"Link: {d_link}"
+        f"Link: <a href="{d_link}">LINK 🖇️</a>"
     )
 
     try:
