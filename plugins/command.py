@@ -134,24 +134,16 @@ async def post_command(client, message):
    
    
     # here main channel post logic 
-      #try:
-        #with open(thumbnail_path, "rb") as thumb:
-            #await client.send_photo(
-              #chat_id=POST_CHANNEL_ID,
-              #photo=thumb,
-              #caption=None,
-              #reply_markup=buttons
-            #)
-        try:
-            await client.send_photo(
-              chat_id=POST_CHANNEL_ID,
-              photo=thumbnail_path,
-              caption=None,
-              reply_markup=buttons
-            ) 
+    try:
+        await client.send_photo(
+            chat_id=POST_CHANNEL_ID,
+            photo=thumbnail_path,
+            caption=None,
+            reply_markup=buttons
+        ) 
         
     except Exception as e:
-      await message.reply_text(f"Send Post Failed! {str(e)}")
+        await message.reply_text(f"Send Post Failed! {str(e)}")
    
    
    # cleanups 
