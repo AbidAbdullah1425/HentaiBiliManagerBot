@@ -76,7 +76,10 @@ async def post_command(client, message):
         pass
   
     
-    filename = f"HENTAIBILI - [{gen_filename()}]"
+    # make folder if not exists
+    os.makedirs("Assist", exist_ok=True)
+
+    filename = f"Assist/HENTAIBILI - [{gen_filename()}]"
 
 
 
@@ -97,6 +100,7 @@ async def post_command(client, message):
     else:
       await status_msg.edit("❌ Thumbnail Generation Failed!")
       thumbnail_path = "Assist/default_thumb.jpg"
+      logger.error(f"thumbnail_path = {thumbnail_path}")
     
     #Upload logic
     upload_msg = await message.reply_text("📤 Upload Initializing...")
@@ -130,14 +134,22 @@ async def post_command(client, message):
    
    
     # here main channel post logic 
-    try:
+        '''try:
         with open(thumbnail_path, "rb") as thumb:
             await client.send_photo(
               chat_id=POST_CHANNEL_ID,
               photo=thumb,
               caption=None,
               reply_markup=buttons
-            )
+            )'''
+        try:
+            await client.send_photo(
+              chat_id=POST_CHANNEL_ID,
+              photo=thumbnail_path,
+              caption=None,
+              reply_markup=buttons
+            ) 
+        
     except Exception as e:
       await message.reply_text(f"Send Post Failed! {str(e)}")
    
