@@ -72,14 +72,18 @@ async def post_command(client, message):
     filepath = os.path.join(DOWNLOAD_DIR, filename)
     status_msg = await message.reply_text("🖼️ Generating Thumbnail! ")
 
+
+
     # download logic
-    success, result = await download(d_link, filename, status_msg)
+    download_msg = await message.reply_text("📩 Download Initializing...")
+    success, result = await download(d_link, filename, download_msg)
     if not success:
       await message.reply_text(f"Download Failed! {result}")
       return
     
     
     # thumbnail generation 
+    status_msg = await message.reply_text("🖼️ Generating Thumbnail!")
     thumbnail_path = await generate_video_thumbnail(filepath)
     
     if thumbnail_path:
@@ -89,7 +93,8 @@ async def post_command(client, message):
       thumbnail_path = "Assist/default_thumb.jpg"
     
     #Upload logic
-    success, db_msg = await upload(result, CREDIT, status_msg)
+    upload_msg = await message.reply_text("📤 Upload Initializing...")
+    success, db_msg = await upload(result, CREDIT, upload_msg)
     if not success:
       await message.reply_text(f"Upload Failed! {result}")
       return
