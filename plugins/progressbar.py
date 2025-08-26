@@ -31,7 +31,7 @@ async def progress_bar(current, total, start_time, message, status):
   total_in_mb = total / (1024 * 1024) # bytes to mb 
   
   prog_text = (
-        f"┌• {status}: {int(elapsed)}s\n"
+        f"┌• {status} ~ {int(elapsed)}s\n"
         f"├• {bar}\n{percent:.2f}%\n"
         f"├• SIZE: {downloaded_in_mb:.2f} MB of {total_in_mb:.2f} MB\n"
         f"├• SPEED: {speed_in_mb:.2f} MB/s\n"
