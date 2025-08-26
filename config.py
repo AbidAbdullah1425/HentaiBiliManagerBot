@@ -29,7 +29,7 @@ DB_CHANNEL_ID = int(os.environ.get("DB_CHANNEL_ID", "-1002689479503"))
 POST_CHANNEL_ID = int(os.environ.get("POST_CHANNEL_ID", "-1002372552947"))
 LOG_CHANNEL_ID = int(os.environ.get("LOG_CHANNEL_ID", "-1002197279542"))
 BOT_USERNAME = os.environ.get("BOT_USERNAME", "Goddo_YatoBot")
-CREDIT = os.environ.get("CREDIT", "<b>💣 ~ <a href='tg://user?id={OWNER_ID}'>OnlyNoco</a></b>")
+CREDIT = os.environ.get("CREDIT", '<b><blockquote>💣 ~ <a href="tg://user?id={OWNER_ID}">OnlyNoco</a></blockquote></b>')
 DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "/tmp")
 CNL_BUTTON_NAME = os.environ.get("CNL_BUTTON_NAME", "📺 Watch / Download")
 
