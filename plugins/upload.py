@@ -5,6 +5,8 @@ import os
 from plugins.progressbar import progress_bar
 import time
 
+
+
 # send the file to db channel
 async def upload(Bot: Client, filepath, caption, message):
     try:
@@ -14,7 +16,7 @@ async def upload(Bot: Client, filepath, caption, message):
 
       start = time.time()
 
-      def prog(current, total, delay):
+      def prog(current, total, delay=3.0): # here delay in inbuilt 
          asyncio.create_task(progress_bar(current, total, start, status="UPLOADING...", message=message, delay=delay))
 
 
@@ -25,7 +27,7 @@ async def upload(Bot: Client, filepath, caption, message):
           caption=caption,
           parse_mode="HTML",
           progress=prog,
-          progress_args=(3.0,) # prog update delay in sec
+          progress_args=()
       )
       return True, send_vid
     except Exception as e:
