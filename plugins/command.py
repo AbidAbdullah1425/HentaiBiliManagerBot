@@ -12,6 +12,7 @@ from plugins.ffmpeg_thumb import generate_video_thumbnail
 from datetime import datetime
 import logging
 import pytz
+from ptrogram.enums import ParseMode
 
 logger = LOGGER("cmnd_py")
 
@@ -68,7 +69,8 @@ async def post_command(client, message):
             chat_id=LOG_CHANNEL_ID,
             text=log_text,
             disable_web_page_preview=True,
-            disable_notification=True # silent msg send no notification
+            disable_notification=True, # silent msg send no notification
+            parse_mode=ParseMode.MARKDOWN
         )
     except Exception as e:
         pass
