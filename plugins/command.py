@@ -32,8 +32,8 @@ async def post_command(Client, message):
       ERROR_MSG = await message.reply_text(
       "No Link Detected! /POST [DIRECT LINK]",
       quote=True
-    )
-    return 
+      )
+      return 
   
     d_link = link[1] #direct link
     filename = f"HENTAIBILI - [{gen_filename()}]"
