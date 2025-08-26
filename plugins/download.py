@@ -18,7 +18,6 @@ async def _download(url, filename, message):
         with open(filepath, "wb") as f:
 
           
-          status_msg = await message.reply_text("📩 Download Initializing...")
 
 
           async for chunk in resp.content.iter_chunked(1024 * 256):
@@ -32,10 +31,10 @@ async def _download(url, filename, message):
                   total=total,
                   start_time=start,
                   status=status,
-                  message=status_msg
+                  message=message
               ) 
 
-          await status_msg.edit("🌆 Download Completed")
+          await message.edit("🌆 Download Completed")
 
 
     kind = filetype.guess(filepath)
