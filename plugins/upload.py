@@ -9,7 +9,7 @@ import asyncio
 
 
 # send the file to db channel
-async def upload(Bot: Client, filepath, caption, message):
+async def upload(Bot: Client, filepath, message):
     try:
       if not os.path.exists(filepath):
           await message.reply_text(f"File NOT found! {filepath}")
@@ -31,7 +31,7 @@ async def upload(Bot: Client, filepath, caption, message):
       send_vid = await Bot.send_video(
           chat_id=DB_CHANNEL_ID,
           video=filepath,
-          caption=caption,
+          caption=CREDIT,
           parse_mode="HTML",
           progress=prog
       )
