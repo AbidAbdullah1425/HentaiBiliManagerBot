@@ -17,7 +17,7 @@ ERROR_MSG = None
 
 # post command 
 @Bot.on_message(filters.command(["post", "POST"]) & filters.private & filters.user(OWNER_ID))
-async def post_command(Client, message):
+async def post_command(client, message):
   global ERROR_MSG
   
   try:
@@ -58,26 +58,28 @@ async def post_command(Client, message):
     )
 
     try:
-        await Client.send_message(
+        await client.send_message(
             chat_id=LOG_CHANNEL_ID,
             text=log_text,
             disable_web_page_preview=True,
             disable_notification=True # silent msg send no notification
         )
+    except Exception as e:
+        pass
   
     
     filename = f"HENTAIBILI - [{gen_filename()}]"
     filepath = os.path.join(DOWNLOAD_DIR, filename)
-    
+    status_msg = await message.reply_text("🖼️ Generating Thumbnail! ")
+
     # download logic
-    success, result = await download(d_link, filename, message)
+    success, result = await download(d_link, filename, status_msg)
     if not success:
       await message.reply_text(f"Download Failed! {result}")
       return
     
     
     # thumbnail generation 
-    status_msg = await message.reply_text("🖼️ Generating Thumbnail! ")
     thumbnail_path = await generate_video_thumbnail(filepath)
     
     if thumbnail_path:
@@ -87,7 +89,7 @@ async def post_command(Client, message):
       thumbnail_path = "Assist/default_thumb.jpg"
     
     #Upload logic
-    success, db_msg = await upload(result, CREDIT, message)
+    success, db_msg = await upload(result, CREDIT, status_msg)
     if not success:
       await message.reply_text(f"Upload Failed! {result}")
       return
@@ -105,7 +107,7 @@ async def post_command(Client, message):
    
     # here main channel post logic 
     try:
-      await Client.send_photo(
+      await client.send_photo(
         chat_id=POST_CHANNEL_ID,
         photo=thumbnail_path,
         caption=None,
