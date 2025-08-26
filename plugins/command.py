@@ -3,13 +3,16 @@ import random
 import string
 import time
 from bot import Bot
-from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID
+from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID, LOGGER
 from pyrogram import Client, filters
 from plugins.download import download
 from plugins.upload import upload
 from plugins.link_gen import link_gen
 from plugins.ffmpeg_thumb import generate_video_thumbnail
 from datetime import datetime
+import logging
+
+logger = LOGGER("cmnd_py")
 
 
 ERROR_MSG = None
