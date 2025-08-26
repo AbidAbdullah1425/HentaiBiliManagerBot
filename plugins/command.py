@@ -45,10 +45,11 @@ async def post_command(client, message):
         await message.delete() # delete my input msg
     except:
         pass
-    
 
 
-    now = datetime.now()
+    #set bangladesh timezone
+    bd_timezone = pytz.timezone('Asia/Dhaka')
+    now = datetime.now(bd_timezone)
     timestamp = now.strftime("%Y-%m-%d %I:%M:%S %p") # 12 hour format : 2025-08-26 02:35:22 PM
     user = message.from_user.mention
     d_link = link[1] #direct link
