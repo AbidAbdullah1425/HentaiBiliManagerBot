@@ -35,6 +35,7 @@ async def _download(url, filename, message):
                 message=status_msg
             ) 
 
+            await status_msg.edit("🌆 Download Completed")
 
 
     kind = filetype.guess(filepath)
