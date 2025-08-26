@@ -97,7 +97,7 @@ async def post_command(client, message):
     upload_msg = await message.reply_text("📤 Upload Initializing...")
     success, db_msg = await upload(client, result, upload_msg)
     if not success:
-      await message.reply_text(f"Upload Failed! {result}")
+      await message.reply_text(f"Upload Failed! {db_msg}")
       return
     
     # link generation logic
