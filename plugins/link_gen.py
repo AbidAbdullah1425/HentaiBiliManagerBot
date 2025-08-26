@@ -4,8 +4,8 @@ from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from config import BOT_USERNAME, DB_CHANNEL_ID
 
 
-async def encode(text: str) -> str:
-  return base64.urlsafe_b64encode(str(file_id).encode()).decode()
+def encode(text: str) -> str:
+  return base64.urlsafe_b64encode(text.encode()).decode()
 
 
 async def link_gen(db_msg):
