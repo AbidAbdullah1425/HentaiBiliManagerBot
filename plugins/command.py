@@ -128,7 +128,9 @@ async def post_command(client, message):
     
     # link generation logic
     share_link, buttons = await link_gen(db_msg)
-    if not share_link:
+    if share_link:
+      await message.reply_text(f"LINK = {share_link}")
+    else:
       await message.reply_text(f"Failed Link Generation!")
       return
     
