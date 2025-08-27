@@ -139,7 +139,6 @@ async def post_command(client, message):
    
     # here main channel post logic 
     try:
-        thumbnail_path = "Assist/default_thumb.jpg"
         await client.send_photo(
             chat_id=POST_CHANNEL_ID,
             photo=thumbnail_path,
