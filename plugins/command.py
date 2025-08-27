@@ -142,7 +142,7 @@ async def post_command(client, message):
         await client.send_photo(
             chat_id=POST_CHANNEL_ID,
             photo=thumbnail_path,
-            caption=None,
+            caption="this js",
             reply_markup=buttons
         ) 
         
