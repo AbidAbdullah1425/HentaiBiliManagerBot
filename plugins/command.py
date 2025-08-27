@@ -145,10 +145,16 @@ async def post_command(client, message):
    
     # here main channel post logic 
     try:
+        
+        if not os.path.exists("/app/thumb.jpg"):
+          logger.error("Thumbnail not found at /app/thumb.jpg")
+        raise FileNotFoundError("Thumbnail not found")
+
+
         await client.send_photo(
             chat_id=POST_CHANNEL_ID,
-            photo=thumbnail_path,
-            caption="this js",
+            photo=open("/app/thumb.jpg", "rb"),
+            caption=None,
             reply_markup=buttons
         ) 
         
