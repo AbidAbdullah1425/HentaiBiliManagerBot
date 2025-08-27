@@ -135,7 +135,11 @@ async def post_command(client, message):
     # here post name logic
     
    
-   
+    if thumbnail_path or os.path.exists(thumbnail_path):
+      await client.reply_text(f"THUMB PATH: {thumbnail_path}")
+    else:
+      await client.reply_text("Thumbnail Path Does not exist")
+        
    
     # here main channel post logic 
     try:
@@ -150,12 +154,14 @@ async def post_command(client, message):
         await message.reply_text(f"Send Post Failed! {str(e)}")
    
    
-   # cleanups 
+    #cleanups 
     try:
       if os.path.exists(thumbnail_path):
         os.remove(thumbnail_path)
+        logger.error(f"thumbnail removed {thumbnail_path}")
       if os.path.exists(result):
         os.remove(result)
+        logger.error(f"Video removed {result}")
     except Exception as e:
       await message.reply_text(f"Cleanup Failed! {e}")
     
