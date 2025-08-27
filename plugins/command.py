@@ -141,7 +141,7 @@ async def post_command(client, message):
     try:
         await client.send_photo(
             chat_id=POST_CHANNEL_ID,
-            photo=thumbnail_path,
+            photo=None,
             caption=None,
             reply_markup=buttons
         ) 
