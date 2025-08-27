@@ -129,7 +129,7 @@ async def post_command(client, message):
     # link generation logic
     share_link, buttons = await link_gen(db_msg)
     if share_link:
-      await message.reply_text(f"LINK = {share_link}")
+      await message.reply_text(f"LINK = {buttons}")
     else:
       await message.reply_text(f"Failed Link Generation!")
       return
@@ -138,9 +138,9 @@ async def post_command(client, message):
     
    
     if thumbnail_path or os.path.exists(thumbnail_path):
-      await client.reply_text(f"THUMB PATH: {thumbnail_path}")
+      await message.reply_text(f"THUMB PATH: {thumbnail_path}")
     else:
-      await client.reply_text("Thumbnail Path Does not exist")
+      await message.reply_text("Thumbnail Path Does not exist")
         
    
     # here main channel post logic 
