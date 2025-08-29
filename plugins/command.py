@@ -22,6 +22,20 @@ ERROR_MSG = None
 download_msg = status_msg = upload_msg = None
 
 
+
+# testing command 
+@Bot.on_message(filters.command("gethumb") & filters.private & filters.user(OWNER_ID))
+async def get_thumb(client, message):
+  if os.path.exists("/app/thumb.jpg"):
+    await message.reply_photo(
+        photo=/app/thumb.jpg,
+        caption="He is the thumb",
+    )
+  else:
+    await message.reply_text("Seems like there is no thumb right there lil bro")
+
+
+
 # post command 
 @Bot.on_message(filters.command(["post", "POST"]) & filters.private & filters.user(OWNER_ID))
 async def post_command(client, message):
