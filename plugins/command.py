@@ -20,20 +20,9 @@ logger = LOGGER("cmnd_py")
 
 
 ERROR_MSG = None
+NO_THUMB = "Assist/default_thunb.jpg"
 download_msg = status_msg = upload_msg = None
 
-
-
-# testing command 
-@Bot.on_message(filters.command("gethumb") & filters.private & filters.user(OWNER_ID))
-async def get_thumb(client, message):
-  if os.path.exists("/app/thumb.jpg"):
-    await message.reply_photo(
-        photo="/app/thumb.jpg",
-        caption="He is the thumb",
-    )
-  else:
-    await message.reply_text("Seems like there is no thumb right there lil bro")
 
 
 
@@ -166,6 +155,7 @@ async def post_command(client, message):
         if not thumbnail_path or not os.path.exists(thumbnail_path):
           logger.error("Thumbnail not found at thumbnail_path")
           raise FileNotFoundError("Thumbnail not found")
+          thumbnail_path = NO_THUMB
 
 
         await client.send_photo(
