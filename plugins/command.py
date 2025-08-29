@@ -98,7 +98,9 @@ async def post_command(client, message):
         pass
  
 
-    filename = f"HENTAIBILI - [{gen_filename()}]"
+
+    file_id = gen_filename()
+    filename = f"HENTAIBILI - [{file_id}]"
 
 
 
@@ -144,7 +146,7 @@ async def post_command(client, message):
     # link generation logic
     buttons = await link_gen(db_msg)
     if buttons:
-      await message.reply_text(f"LINK = {buttons}")
+      logger.info(f"Link GENERATED!")
     else:
       await message.reply_text(f"Failed Link Generation!")
       return
@@ -153,7 +155,7 @@ async def post_command(client, message):
     
    
     if thumbnail_path and os.path.exists(thumbnail_path):
-      await message.reply_text(f"THUMB PATH: {thumbnail_path}")
+      logger.info(f"THUMB PATH: {thumbnail_path}")
     else:
       await message.reply_text("Thumbnail Path Does not exist")
         
@@ -205,6 +207,7 @@ async def post_command(client, message):
             await msg.delete()
         except:
             pass
+
    
 
 # generate random id for filename
