@@ -13,7 +13,7 @@ async def link_gen(db_msg):
     encoded = encode(f"get-{db_msg.id * abs(DB_CHANNEL_ID)}")
     start_link = f"https://t.me/{BOT_USERNAME}?start={encoded}"
     buttons = InlineKeyboardMarkup([[InlineKeyboardButton("📺 Watch / Download", url=start_link)]])
-    return buttons, start_link
+    return buttons
   except Exception as e:
     logger.error(f"Link Generation Failed! {e}")
-    return None, None
+    return None
