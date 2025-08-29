@@ -160,8 +160,8 @@ async def post_command(client, message):
     # here main channel post logic 
     try:
         
-        if not thumbnail_path or os.path.exists("/app/thumb.jpg"):
-          logger.error("Thumbnail not found at /app/thumb.jpg")
+        if not thumbnail_path or os.path.exists(thumbnail_path):
+          logger.error("Thumbnail not found at thumbnail_path")
           raise FileNotFoundError("Thumbnail not found")
 
 
