@@ -137,7 +137,7 @@ async def post_command(client, message):
     # here post name logic
     
    
-    if thumbnail_path or os.path.exists(thumbnail_path):
+    if thumbnail_path and os.path.exists(thumbnail_path):
       await message.reply_text(f"THUMB PATH: {thumbnail_path}")
     else:
       await message.reply_text("Thumbnail Path Does not exist")
@@ -146,16 +146,17 @@ async def post_command(client, message):
     # here main channel post logic 
     try:
         
-        if not os.path.exists("/app/thumb.jpg"):
+        if not thumbnail_path or os.path.exists("/app/thumb.jpg"):
           logger.error("Thumbnail not found at /app/thumb.jpg")
-        raise FileNotFoundError("Thumbnail not found")
+          raise FileNotFoundError("Thumbnail not found")
 
 
         await client.send_photo(
             chat_id=POST_CHANNEL_ID,
-            photo=open("/app/thumb.jpg", "rb"),
+            photo=thumbnail_path,
             caption=None,
-            reply_markup=buttons
+            reply_markup=buttons,
+            parse_mode=ParseMode.MARKDOWN
         ) 
         
     except Exception as e:
