@@ -25,7 +25,7 @@ async def generate_video_thumbnail(video_path: str) -> Optional[str]:
         result = subprocess.run(duration_cmd, capture_output=True, text=True)
         if result.returncode != 0:
             logger.error(f"Video Duration Exporter Failed! (ffprobe)\n\n {result.stderr}")
-            return None
+            await message.reply_text(f"Video Duration Exporter Failed! (ffprobe)\n\n {result.stderr}")
             
         try:
             duration = float(result.stdout.strip())
@@ -52,14 +52,14 @@ async def generate_video_thumbnail(video_path: str) -> Optional[str]:
         process = subprocess.run(thumbnail_cmd, capture_output=True)
         if process.returncode != 0:
             logger.error(f"Thumbnail generation failed!\n\n {process.stderr}")
-            return None
+            await message.reply_text(f"Thumbnail generation failed!\n\n {process.stderr}")
             
         if os.path.exists(thumbnail_path):
             logger.info(f"Thumbnail generated: {thumbnail_path}")
             return thumbnail_path
             
-        return None
+        await message.reply_text(f"Thumbnail generated: {thumbnail_path}")
         
     except Exception as e:
         logger.error(f"Error generating thumbnail: {str(e)}")
-        return None
+        await message.reply_text(f"Error generating thumbnail: {str(e)}")
