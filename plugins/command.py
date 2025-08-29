@@ -12,6 +12,7 @@ from plugins.ffmpeg_thumb import generate_video_thumbnail
 from datetime import datetime
 import logging
 import pytz
+import traceback
 
 from pyrogram.enums import ParseMode
 
@@ -174,7 +175,10 @@ async def post_command(client, message):
         ) 
         
     except Exception as e:
+        error_text = f"Upload Failed / In POST SECTION!"
         await message.reply_text(f"Send Post Failed! {str(e)}")
+        logger.error(error_text)
+        logger.error(traceback.format_exc())
    
    
     #cleanups 
