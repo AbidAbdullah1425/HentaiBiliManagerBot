@@ -177,7 +177,7 @@ async def post_command(client, message):
         await message.reply_text(f"Send Post Failed! {str(e)}")
    
    
-    f'''#cleanups 
+    #cleanups 
     try:
       if os.path.exists(thumbnail_path):
         os.remove(thumbnail_path)
@@ -186,7 +186,7 @@ async def post_command(client, message):
         os.remove(result)
         logger.error(f"Video removed {result}")
     except Exception as e:
-      await message.reply_text(f"Cleanup Failed! {e}")'''
+      await message.reply_text(f"Cleanup Failed! {e}")
     
    
   except Exception as e:
