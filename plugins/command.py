@@ -154,7 +154,6 @@ async def post_command(client, message):
         
         if not thumbnail_path or not os.path.exists(thumbnail_path):
           logger.error("Thumbnail not found at thumbnail_path")
-          raise FileNotFoundError("Thumbnail not found")
           thumbnail_path = NO_THUMB
 
 
