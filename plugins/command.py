@@ -28,7 +28,7 @@ download_msg = status_msg = upload_msg = None
 async def get_thumb(client, message):
   if os.path.exists("/app/thumb.jpg"):
     await message.reply_photo(
-        photo=/app/thumb.jpg,
+        photo="/app/thumb.jpg",
         caption="He is the thumb",
     )
   else:
