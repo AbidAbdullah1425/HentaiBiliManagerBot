@@ -20,7 +20,7 @@ logger = LOGGER("cmnd_py")
 
 
 ERROR_MSG = None
-NO_THUMB = "Assist/default_thunb.jpg"
+NO_THUMB = "Assist/default_thumb_1.jpg"
 download_msg = status_msg = upload_msg = None
 
 
