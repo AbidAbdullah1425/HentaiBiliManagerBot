@@ -25,6 +25,17 @@ download_msg = status_msg = upload_msg = None
 
 
 
+#-- here is the forward or upload command handler--#
+
+@Bot.on_message(filters.private & filters.user(OWNER_ID) & (filters.command("genpost") | filters.video | filters.document))
+async def local_post_command(client, message):
+  logger.info("working on it")
+
+
+
+
+
+#-- Here is the post command handler--#
 
 # post command 
 @Bot.on_message(filters.command(["post", "POST"]) & filters.private & filters.user(OWNER_ID))
