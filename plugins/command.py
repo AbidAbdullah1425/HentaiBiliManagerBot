@@ -275,12 +275,22 @@ async def process_post_queue(client, message, d_link):
 
         # check queue
         if not POST_QUEUE.empty():
-            next_client, next_message, next_link, next_queue_msg = await POST_QUEUE.get()
+            next_item = await POST_QUEUE.get()
+            if len(next_item) == 4:
+                next_client, next_message, next_link, next_queue_msg = next_item 
+        else:
+            next_client, next_message, next_link = next_item
+            next_queue_msg = None
+
+
+        if next_queue_msg:
             try:
-                await next_queue_msg.delete()  # delete queue message before processing
+                await next_queue_msg.delete() 
             except:
                 pass
-            await process_post_queue(next_client, next_message, next_link)
+        
+        await process_post_queue(next_client, next_message, next_link)
+        
 
 
 
