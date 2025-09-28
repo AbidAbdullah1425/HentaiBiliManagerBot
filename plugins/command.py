@@ -235,7 +235,7 @@ async def main_process(client, message, d_link):
     
     # clean up pm indicator msgs
   finally:
-    for msg in [download_msg, status_msg, upload_msg]:
+    for msg in [download_msg, status_msg, upload_msg, queue_msg, proc_msg]:
       if msg:
         try:
             await msg.delete()
@@ -248,11 +248,11 @@ async def process_post_queue(client, message, d_link):
     global IS_PROCESSING
     if IS_PROCESSING:   # already working on another task
         await POST_QUEUE.put((client, message, d_link))
-        await message.reply_text(f"✅ Added to queue! Position: {POST_QUEUE.qsize()}")
+        queue_msg = await message.reply_text(f"✅ Added to queue! Position: {POST_QUEUE.qsize()}")
         return
 
     IS_PROCESSING = True
-    await message.reply_text("🚀 Processing your task now...")
+    proc_msg = await message.reply_text("🚀 Processing your task now...")
 
     try:
         # 🔵 run your existing post logic
