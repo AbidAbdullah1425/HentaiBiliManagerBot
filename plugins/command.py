@@ -235,7 +235,7 @@ async def main_process(client, message, d_link):
     
     # clean up pm indicator msgs
   finally:
-    for msg in [download_msg, status_msg, upload_msg, queue_msg, proc_msg]:
+    for msg in [download_msg, status_msg, upload_msg]:
       if msg:
         try:
             await msg.delete()
@@ -259,10 +259,20 @@ async def process_post_queue(client, message, d_link):
         await main_process(client, message, d_link)
     finally:
         IS_PROCESSING = False
+        # delete starus msgs
+        try: 
+            await queue_msg.delete()
+            await proc_msg.delete()
+        except:
+            pass
 
-        # if something is waiting in queue → process it
+        # check queue
         if not POST_QUEUE.empty():
-            next_client, next_message, next_link = await POST_QUEUE.get()
+            next_client, next_message, next_link, next_queue_msg = await POST_QUEUE.get()
+            try:
+                await next_queue_msg.delete()  # delete queue message before processing
+            except:
+                pass
             await process_post_queue(next_client, next_message, next_link)
 
 
