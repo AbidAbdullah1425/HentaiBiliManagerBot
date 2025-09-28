@@ -246,9 +246,15 @@ async def main_process(client, message, d_link):
 # Queue system 
 async def process_post_queue(client, message, d_link):
     global IS_PROCESSING
+    queue_msg = None
+    proc_msg = None
+
+
+
+
     if IS_PROCESSING:   # already working on another task
-        await POST_QUEUE.put((client, message, d_link))
         queue_msg = await message.reply_text(f"✅ Added to queue! Position: {POST_QUEUE.qsize()}")
+        await POST_QUEUE.put((client, message, d_link, queue_msg))
         return
 
     IS_PROCESSING = True
@@ -259,12 +265,13 @@ async def process_post_queue(client, message, d_link):
         await main_process(client, message, d_link)
     finally:
         IS_PROCESSING = False
-        # delete starus msgs
-        try: 
-            await queue_msg.delete()
-            await proc_msg.delete()
-        except:
-            pass
+        # delete processing messages safely
+        for msg in [proc_msg, queue_msg]:
+            if msg:
+                try:
+                    await msg.delete()
+                except:
+                    pass
 
         # check queue
         if not POST_QUEUE.empty():
