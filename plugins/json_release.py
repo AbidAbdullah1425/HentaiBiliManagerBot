@@ -12,6 +12,7 @@ from urllib.parse import urlparse
 from pyrogram import Client, filters
 from pyrogram.enums import ParseMode
 import json
+from database.database import is_processed, save_processed
 from bot import Bot
 from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID, LOGGER, NO_THUMB
 from plugins.download import download, download_thumb
@@ -22,7 +23,7 @@ from plugins.ffmpeg_thumb import generate_video_thumbnail
 logger = LOGGER("join_release.py")
 
 @Bot.on_message(
-    filters.user(OWNER_IDS) &
+    filters.user(OWNER_ID) &
     (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and (m.document.file_name.endswith(".json"))))
 )
 async json_release(client: Client, message: Message):
@@ -57,7 +58,8 @@ async json_release(client: Client, message: Message):
             cover = item["cover"]
             preview_images_urls = item["preview_images_urls"]
             video_url = item["video_url"]
-            
+            if await is_processed(url):
+                continue
             title = extract_title(url) # title of the media
          
             # Download
@@ -104,17 +106,29 @@ async json_release(client: Client, message: Message):
                 f"<blockquote><a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
             )
             
-            await client.send_photo(
+            post = await client.send_photo(
                 chat_id=POST_CHANNEL_ID,
                 photo=thumbnail_path,
                 caption=caption,
                 reply_markup=buttons,
                 parse_mode=ParseMode.HTML
-            )
+            ) 
+            
+            await save_processed({
+                "url": url,
+                "title": title,
+                "studio": studio,
+                "genres": genres,
+                "cover": cover,
+                "video_url": video_url,
+                "preview_images_urls": preview_images_urls,
+                "media_id": db_msg.id,
+                "post_id": post.id
+            })
             
             # Cleanup
             for path in [thumbnail_path, result]:
-                if path and os.path.exists(path):
+                if path and path != NO_THUMB and os.path.exists(path):
                     try:
                         os.remove(path)
                         logger.info(f"Removed file: {path}")
@@ -136,8 +150,6 @@ async json_release(client: Client, message: Message):
         if os.path.exists(DOWNLOAD_DIR):
             shutil.rmtree(DOWNLOAD_DIR)
             os.makedirs(DOWNLOAD_DIR)
-        
-        
         gc.collect()
 
 
