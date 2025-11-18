@@ -28,9 +28,6 @@ IS_PROCESSING = False
 #----------------------------#
 # Command to generate post
 #----------------------------#
-@Bot.on_message(filters.private & filters.user(OWNER_ID) & (filters.command("genpost") | filters.video | filters.document))
-async def local_post_command(client, message):
-    logger.info("Working on it...")
 
 #----------------------------#
 # Post command handler
