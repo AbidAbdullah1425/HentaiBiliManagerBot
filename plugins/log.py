@@ -4,7 +4,7 @@ from bot import Bot
 
 
 
-@Bot.on_message(filters.user(OWNER_IDS) & filters.command("logs"))
+@Bot.on_message(filters.user(OWNER_ID) & filters.command("logs"))
 async def get_log_file(client, message):
     try:
         await message.reply_document(document=LOG_FILE_NAME, caption=None)
