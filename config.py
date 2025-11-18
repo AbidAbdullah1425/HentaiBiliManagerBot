@@ -32,7 +32,7 @@ BOT_USERNAME = os.environ.get("BOT_USERNAME", "Goddo_YatoBot")
 CREDIT = os.environ.get("CREDIT", f"<b><a href='tg://user?id={OWNER_ID}'>OnlyNoco</a></b>\n")
 DOWNLOAD_DIR = os.environ.get("DOWNLOAD_DIR", "/tmp")
 CNL_BUTTON_NAME = os.environ.get("CNL_BUTTON_NAME", "📺 Watch / Download")
-
+NO_THUMB = "Assist/default_thumb_1.jpg"
 #DOWNLOAD_DIR = os.path.expanduser("~/HNTBOTR/downloads") # for termux
 
 
