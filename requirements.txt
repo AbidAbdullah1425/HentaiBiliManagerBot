@@ -1,7 +1,8 @@
 aiohttp
 TgCrypto
 pyrogram
-pymongo
+#pymongo
+motor
 pyromod==1.5
 dnspython
 filetype
