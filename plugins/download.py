@@ -3,10 +3,26 @@ import time
 import filetype
 import os
 import aiohttp
+import aiofiles
 from config import DB_CHANNEL_ID, POST_CHANNEL_ID, DOWNLOAD_DIR, CREDIT, LOGGER
 from plugins.progressbar import progress_bar
 
 logger = LOGGER("download_py")
+
+
+
+
+async def download_thumb(url):
+    async with aiohttp.ClientSession() as s:
+        async with s.get(url) as r:
+            data = await r.read()
+
+    save_path = os.path.join(DOWNLOAD_DIR, "thumb.jpg")
+    async with aiofiles.open(save_path, "wb") as f:
+        await f.write(data)
+
+    return save_path
+
 
 
 async def _download(url, filename, message):
