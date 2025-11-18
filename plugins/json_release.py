@@ -48,7 +48,7 @@ async def json_release(client: Client, message: Message):
                 "url": item["url"],
                 "studio": item["studio"],
                 "genres": item["genres"],
-                "cover": item["cover"],
+                "cover": item["cover_image_url"],
                 "preview_images_urls": item["preview_images_urls"],
                 "video_url": item["video_url"]
             })
@@ -56,7 +56,7 @@ async def json_release(client: Client, message: Message):
             url = item["url"]
             studio = item["studio"]
             genres = item["genres"]
-            cover = item["cover"]
+            cover = item["cover_image_url"]
             preview_images_urls = item["preview_images_urls"]
             video_url = item["video_url"]
             if await is_processed(url):
