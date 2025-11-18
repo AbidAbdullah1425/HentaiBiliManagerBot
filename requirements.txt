@@ -7,10 +7,5 @@ dnspython
 filetype
 ffprobe
 pytz
-requests
-beautifulsoup4
-lxml
-selenium
-tqdm
 
 
