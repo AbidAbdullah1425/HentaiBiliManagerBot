@@ -12,7 +12,7 @@ from pyrogram import Client, filters
 from pyrogram.enums import ParseMode
 
 from bot import Bot
-from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID, LOGGER
+from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID, LOGGER, NO_THUMB
 from plugins.download import download
 from plugins.upload import upload
 from plugins.link_gen import link_gen
@@ -22,7 +22,6 @@ logger = LOGGER("cmnd_py")
 
 # Global vars
 ERROR_MSG = None
-NO_THUMB = "Assist/default_thumb_1.jpg"
 POST_QUEUE = asyncio.Queue()
 IS_PROCESSING = False
 
