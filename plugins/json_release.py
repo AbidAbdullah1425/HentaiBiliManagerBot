@@ -9,6 +9,7 @@ import traceback
 import asyncio
 import logging
 from urllib.parse import urlparse
+from pyrogram.types import Message
 from pyrogram import Client, filters
 from pyrogram.enums import ParseMode
 import json
@@ -23,8 +24,9 @@ from plugins.ffmpeg_thumb import generate_video_thumbnail
 logger = LOGGER("join_release.py")
 
 @Bot.on_message(
-    filters.user(OWNER_ID) &
-    (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and (m.document.file_name.endswith(".json"))))
+    filters.user(OWNER_ID)
+    & (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and m.document.file_name.endswith(".json"))))
+)
 async def json_release(client: Client, message: Message):
     # Default Values
     thumbnail_path = None
