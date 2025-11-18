@@ -26,7 +26,7 @@ logger = LOGGER("join_release.py")
     filters.user(OWNER_ID) &
     (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and (m.document.file_name.endswith(".json"))))
 )
-async json_release(client: Client, message: Message):
+async def json_release(client: Client, message: Message):
     # Default Values
     thumbnail_path = None
     result = None
