@@ -106,7 +106,7 @@ async def json_release(client: Client, message: Message):
                 f"<blockquote>{title}</blockquote>\n\n"
                 f"<blockquote>• Studio: {studio}</blockquote>\n"
                 f"<blockquote>• Genres: {genre_text}</blockquote>\n"
-                f"<blockquote><a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
+                f"<blockquote>ᴘʀᴏᴠɪᴅᴇᴅ ʙʏ <a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
             )
             
             post = await client.send_photo(
