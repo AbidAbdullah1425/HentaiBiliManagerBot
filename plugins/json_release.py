@@ -9,13 +9,12 @@ import traceback
 import asyncio
 import logging
 from urllib.parse import urlparse
-from pyrogram.types import Message
 from pyrogram import Client, filters
 from pyrogram.enums import ParseMode
 import json
 from database.database import is_processed, save_processed
 from bot import Bot
-from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID, LOGGER, NO_THUMB
+from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID, LOGGER, NO_THUMB, GENRE_EMOJIS
 from plugins.download import download, download_thumb
 from plugins.upload import upload
 from plugins.link_gen import link_gen
@@ -24,10 +23,10 @@ from plugins.ffmpeg_thumb import generate_video_thumbnail
 logger = LOGGER("join_release.py")
 
 @Bot.on_message(
-    filters.user(OWNER_ID)
-    & (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and m.document.file_name.endswith(".json"))))
+    filters.user(OWNER_ID) &
+    (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and (m.document.file_name.endswith(".json"))))
 )
-async def json_release(client: Client, message: Message):
+async json_release(client: Client, message: Message):
     # Default Values
     thumbnail_path = None
     result = None
@@ -52,10 +51,12 @@ async def json_release(client: Client, message: Message):
                 "preview_images_urls": item["preview_images_urls"],
                 "video_url": item["video_url"]
             })
+
         for item in GLOBAL_DATA:
             url = item["url"]
             studio = item["studio"]
             genres = item["genres"]
+            genre_text = ", ".join(f"{GENRE_EMOJIS.get(g, '•')} {g}" for g in genres)
             cover = item["cover"]
             preview_images_urls = item["preview_images_urls"]
             video_url = item["video_url"]
@@ -119,7 +120,7 @@ async def json_release(client: Client, message: Message):
                 "url": url,
                 "title": title,
                 "studio": studio,
-                "genres": genres,
+                "genres": genre_text,
                 "cover": cover,
                 "video_url": video_url,
                 "preview_images_urls": preview_images_urls,
