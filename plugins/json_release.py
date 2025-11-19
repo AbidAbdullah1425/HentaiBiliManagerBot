@@ -26,7 +26,7 @@ logger = LOGGER("join_release.py")
     filters.user(OWNER_ID) &
     (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and (m.document.file_name.endswith(".json"))))
 )
-async json_release(client: Client, message: Message):
+async def json_release(client: Client, message: Message):
     # Default Values
     thumbnail_path = None
     result = None
@@ -56,7 +56,7 @@ async json_release(client: Client, message: Message):
             url = item["url"]
             studio = item["studio"]
             genres = item["genres"]
-            genre_text = ", ".join(f"{GENRE_EMOJIS.get(g, '•')} {g}" for g in genres)
+            genre_text = ", ".join(f"{GENRE_EMOJIS.get(g, '🧤')} {g}" for g in genres)
             cover = item["cover"]
             preview_images_urls = item["preview_images_urls"]
             video_url = item["video_url"]
