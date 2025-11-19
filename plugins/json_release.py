@@ -9,6 +9,7 @@ import traceback
 import asyncio
 import logging
 from urllib.parse import urlparse
+from pyrogram.types import Message
 from pyrogram import Client, filters
 from pyrogram.enums import ParseMode
 import json
@@ -24,7 +25,7 @@ logger = LOGGER("join_release.py")
 
 @Bot.on_message(
     filters.user(OWNER_ID) &
-    (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and (m.document.file_name.endswith(".json"))))
+    (filters.video | (filters.document & filters.create(lambda _, __, m: m.document and m.document.file_name.endswith(".json"))))
 )
 async def json_release(client: Client, message: Message):
     # Default Values
@@ -104,7 +105,7 @@ async def json_release(client: Client, message: Message):
             caption = (
                 f"<blockquote>{title}</blockquote>\n\n"
                 f"<blockquote>• Studio: {studio}</blockquote>\n"
-                f"<blockquote>• Genres: {genres}</blockquote>\n"
+                f"<blockquote>• Genres: {genre_text}</blockquote>\n"
                 f"<blockquote><a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
             )
             
