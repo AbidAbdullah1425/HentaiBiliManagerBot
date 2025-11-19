@@ -1,6 +1,6 @@
 aiohttp
 TgCrypto
-pyrogram
+pyrofork
 #pymongo
 motor
 pyromod==1.5
