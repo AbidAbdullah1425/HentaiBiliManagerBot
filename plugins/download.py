@@ -10,68 +10,83 @@ from plugins.progressbar import progress_bar
 logger = LOGGER("download_py")
 
 
-
-
 async def download_thumb(url):
     async with aiohttp.ClientSession() as s:
         async with s.get(url) as r:
             data = await r.read()
 
     save_path = os.path.join(DOWNLOAD_DIR, "thumb.jpg")
+
     async with aiofiles.open(save_path, "wb") as f:
         await f.write(data)
 
     return save_path
 
 
-
 async def _download(url, filename, message):
-  try:
-    status = "DOWNLOADING..."
-    start = time.time()
-    filepath = os.path.join(DOWNLOAD_DIR, filename)
-    async with aiohttp.ClientSession() as session:
-      async with session.get(url) as resp:
-        total = int(resp.headers.get("Content-Length", 0))
-        downloaded = 0
-        with open(filepath, "wb") as f:
+    try:
+        status = "DOWNLOADING..."
+        start = time.time()
+        filepath = os.path.join(DOWNLOAD_DIR, filename)
 
-          
+        async with aiohttp.ClientSession() as session:
+            async with session.get(url) as resp:
+
+                # URL invalid / expired
+                if resp.status != 200:
+                    return False, f"Expired or Invalid URL {resp.status}"
+
+                # No length = dead/expired URL
+                total = int(resp.headers.get("Content-Length", 0))
+                if total == 0:
+                    return False, "Content Length = 0"
+
+                downloaded = 0
+
+                # Start writing file
+                with open(filepath, "wb") as f:
+                    async for chunk in resp.content.iter_chunked(1024 * 256):
+
+                        if not chunk:
+                            return False, "Download Failed! Empty Data Found."
+
+                        f.write(chunk)
+                        downloaded += len(chunk)
+
+                        # Progress bar
+                        await progress_bar(
+                            current=downloaded,
+                            total=total,
+                            start_time=start,
+                            status=status,
+                            message=message
+                        )
+
+                await message.edit("🌆 Download Completed")
+
+        # If video too small = invalid or broken
+        if os.path.getsize(filepath) < 100 * 1024:
+            os.remove(filepath)
+            return False, "Download failed: file too small (invalid video)"
+
+        # Detect extension
+        kind = filetype.guess(filepath)
+        ext = "." + kind.extension if kind else ".mp4"
+
+        # Rename file if extension missing
+        if ext and not filename.endswith(ext):
+            new_name = filename + ext
+            new_path = os.path.join(DOWNLOAD_DIR, new_name)
+            os.rename(filepath, new_path)
+            filepath = new_path
+            logger.error(f"FileName: {new_name}\nFilePath: {filepath}")
+
+        return True, filepath
+
+    except Exception as e:
+        return False, str(e)
 
 
-          async for chunk in resp.content.iter_chunked(1024 * 256):
-              f.write(chunk)
-              downloaded += len(chunk) 
-            
-
-              # CALL FOR THE PROG BAR
-              await progress_bar(
-                  current=downloaded,
-                  total=total,
-                  start_time=start,
-                  status=status,
-                  message=message
-              ) 
-
-          await message.edit("🌆 Download Completed")
-
-
-    kind = filetype.guess(filepath)
-    ext = "." + kind.extension if kind else ".mp4"
-  
-    if ext and not filename.endswith(ext):
-      new_name = filename + ext 
-      new_path = os.path.join(DOWNLOAD_DIR, new_name)
-      os.rename(filepath, new_path)
-      filepath = new_path
-      logger.error(f"FileName: {new_name}\nFilePath: {filepath}")
-   
-    return True, filepath
-  except Exception as e:
-    return False, str(e)
-
-
-
-# wrap the _download so i can call it from anywhere easily
+# Wrapper
 async def download(url, filename, message):
-  return await _download(url, filename, message)
+    return await _download(url, filename, message)
