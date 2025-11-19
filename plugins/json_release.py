@@ -62,6 +62,8 @@ async def json_release(client: Client, message: Message):
             preview_images_urls = item["preview_images_urls"]
             video_url = item["video_url"]
             if await is_processed(url):
+                logger.info(f"Already processed skiped {url}")
+                await message.reply_text(f"Already processed skiped {url}")
                 continue
             title = extract_title(url) # title of the media
          
