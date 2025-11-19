@@ -103,7 +103,7 @@ async def json_release(client: Client, message: Message):
                 thumbnail_path = NO_THUMB
            
             caption = (
-                f"<blockquote>{title}</blockquote>\n\n"
+                f"<blockquote><i>{title}</blockquote></i>\n\n"
                 f"<blockquote>• Studio: {studio}</blockquote>\n"
                 f"<blockquote>• Genres: {genre_text}</blockquote>\n"
                 f"<blockquote>ᴘʀᴏᴠɪᴅᴇᴅ ʙʏ <a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
@@ -114,7 +114,8 @@ async def json_release(client: Client, message: Message):
                 photo=thumbnail_path,
                 caption=caption,
                 reply_markup=buttons,
-                parse_mode=ParseMode.HTML
+                parse_mode=ParseMode.HTML,
+                has_spoiler=True
             ) 
             
             await save_processed({
