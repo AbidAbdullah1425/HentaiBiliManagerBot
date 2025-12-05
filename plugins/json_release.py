@@ -154,7 +154,7 @@ async def json_release(client: Client, message: Message):
 
     finally:
         if os.path.exists(DOWNLOAD_DIR):
-            shutil.rmtree(DOWNLOAD_DIR)
+            #shutil.rmtree(DOWNLOAD_DIR)
             os.makedirs(DOWNLOAD_DIR)
         collected_objects = gc.collect()
         logger.info(f"Collected Objects: {collected_objects}")
