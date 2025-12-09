@@ -1,9 +1,11 @@
-from pyrogram import Client, filters
-import requests
-from requests.exceptions import RequestException, HTTPError, ConnectionError, Timeout
+import aiohttp
+import asyncio
 import os
+import time
+from pyrogram import Client, filters
 from bot import Bot
-from config import LOGGER  # your custom LOGGER function
+from config import LOGGER, OWNER_ID
+from plugins.progressbar import progress_bar  # your existing progress bar
 
 log = LOGGER("GG")
 
@@ -13,47 +15,36 @@ LINKS = {
     "animepahe": "https://vault-99.owocdn.top/stream/99/01/15b745f84e01146ba1632b4b2366f6ba5bbe0ea051583ac0e42e669c98169477/uwu.m3u8"
 }
 
-def download_file(url, filename):
-    """Download file with full debug + hardcore error handling"""
+async def download_file(session, url, filename, message):
+    """Async download with progress bar and logging"""
     try:
-        log.info(f"[DEBUG] Starting download: {url}")
-        with requests.get(url, stream=True, timeout=None) as r:
-            try:
-                r.raise_for_status()
-            except HTTPError as he:
-                msg = f"HTTP error: {he} | Status: {r.status_code} | Headers: {r.headers}"
+        async with session.get(url) as resp:
+            if resp.status != 200:
+                msg = f"HTTP error {resp.status} | Headers: {resp.headers}"
                 log.error(msg)
                 return msg
 
-            total = int(r.headers.get('content-length', 0))
+            total = int(resp.headers.get("Content-Length", 0))
             downloaded = 0
+            start_time = time.time()
 
             with open(filename, "wb") as f:
-                for chunk in r.iter_content(chunk_size=1024*1024):
+                async for chunk in resp.content.iter_chunked(1024*1024):
                     if chunk:
                         f.write(chunk)
                         downloaded += len(chunk)
-                        if total:
-                            percent = downloaded / total * 100
-                            log.info(f"Downloaded: {percent:.2f}%")
-        msg = f"Download finished: {filename}"
-        log.info(msg)
-        return msg
+                        await progress_bar(downloaded, total, start_time, message, "Downloading")
 
-    except ConnectionError as ce:
-        msg = f"Connection failed: {ce}"
-        log.error(msg)
-        return msg
-    except Timeout as te:
-        msg = f"Request timed out: {te}"
-        log.error(msg)
-        return msg
-    except RequestException as e:
+            msg = f"Download finished: {filename}"
+            log.info(msg)
+            return msg
+
+    except Exception as e:
         msg = f"Download failed: {e}"
         log.error(msg)
         return msg
 
-@Bot.on_message(filters.command("testdl") & filters.me)
+@Bot.on_message(filters.command("testdl") & filters.private & filters.user(OWNER_ID))
 async def test_download(client, message):
     if len(message.command) < 2:
         await message.reply_text("Usage: /testdl <gogo|animepahe>")
@@ -68,13 +59,12 @@ async def test_download(client, message):
 
     url = LINKS[choice]
     filename = f"{choice}_test.mp4" if choice == "gogo" else f"{choice}_test.m3u8"
-    await message.reply_text(f"Starting download for {choice}...")
+    status_msg = await message.reply_text(f"Starting download for {choice}...")
 
-    # Download file
-    result = download_file(url, filename)
+    async with aiohttp.ClientSession() as session:
+        result = await download_file(session, url, filename, status_msg)
 
-    # Send result to Telegram PM
-    await message.reply_text(f"Result: {result}")
+    await status_msg.edit_text(f"Result: {result}")
 
     # Cleanup
     if os.path.exists(filename):
