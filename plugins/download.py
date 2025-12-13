@@ -48,7 +48,9 @@ async def _download(url, filename, message):
                     async for chunk in resp.content.iter_chunked(1024 * 256):
 
                         if not chunk:
-                            return False, "Download Failed! Empty Data Found."
+                            #return False, "Download Failed! Empty Data Found."
+                            await asyncio.sleep(0.3)
+                            continue
 
                         f.write(chunk)
                         downloaded += len(chunk)
