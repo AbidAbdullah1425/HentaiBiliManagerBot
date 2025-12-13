@@ -28,8 +28,12 @@ async def _download(url, filename, message):
         status = "DOWNLOADING..."
         start = time.time()
         filepath = os.path.join(DOWNLOAD_DIR, filename)
+        timeout = aiohttp.ClientTimeout(
+            sock_read=70,
+            sock_connect=70
+        )
 
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(timeout=timeout) as session:
             async with session.get(url) as resp:
 
                 # URL invalid / expired
@@ -42,18 +46,21 @@ async def _download(url, filename, message):
                     return False, "Content Length = 0"
 
                 downloaded = 0
+                last_data = time.time()
 
                 # Start writing file
                 with open(filepath, "wb") as f:
                     async for chunk in resp.content.iter_chunked(1024 * 256):
 
                         if not chunk:
-                            #return False, "Download Failed! Empty Data Found."
+                            if time.time() - last_data > 180:
+                                return False, "Download Stalled! (no data)."
                             await asyncio.sleep(0.3)
                             continue
 
                         f.write(chunk)
                         downloaded += len(chunk)
+                        last_data = time.time()
 
                         # Progress bar
                         await progress_bar(
