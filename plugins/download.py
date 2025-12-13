@@ -55,7 +55,7 @@ async def _download(url, filename, message):
                         if not chunk:
                             if time.time() - last_data > 180:
                                 return False, "Download Stalled! (no data)."
-                            await asyncio.sleep(0.3)
+                            await asyncio.sleep(0.5)
                             continue
 
                         f.write(chunk)
