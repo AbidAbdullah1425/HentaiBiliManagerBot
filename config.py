@@ -82,7 +82,30 @@ GENRE_EMOJIS = {
     "X-Ray": "🔍",
     "Yuri": "🌸",
     "AniMan": "🐰",
-    "Bunnywalker": "🐇"
+    "Bunnywalker": "🐇",
+    "Horny Slut": "🔥",
+    "Torudaya": "🎌",
+    "Shimapan": "🩲",
+    "Swimsuit": "👙",
+    "Suzuki Mirano": "🎤",
+    "Supernatural": "👻",
+    "Gold Bear": "🐻‍❄️",
+    "Virgins": "🌸",
+    "Dark Skin": "🌑",
+    "Threesome": "3️⃣",
+    "Double Penetration": "➿",
+    "Romance": "💖",
+    "Super Power": "💥",
+    "Majin": "😈",
+    "Magical Girls": "✨",
+    "Cute & Funny": "😸",
+    "Cat Girl": "🐱",
+    "Succubus": "🦇",
+    "Toys": "🧸",
+    "Juicymango": "🥭",
+    "Blackmail": "🕳️",
+    "Maid": "🧹",
+    "Female Teacher": "📚"
 }
 
 
