@@ -19,7 +19,8 @@ from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_I
 from plugins.download import download, download_thumb
 from plugins.upload import upload
 from plugins.link_gen import link_gen
-from plugins.ffmpeg_thumb import generate_video_thumbnail
+from plugins.ffmpeg_thumb import generate_video_thumbnail 
+
 
 logger = LOGGER("join_release.py")
 
