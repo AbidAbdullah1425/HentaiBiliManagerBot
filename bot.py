@@ -26,6 +26,7 @@ class Bot(Client):
         self.LOGGER = LOGGER 
 
         self.user = Client(
+            name="User",
             session_string=SESSION,
             api_hash=API_HASH,
             api_id=APP_ID
