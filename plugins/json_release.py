@@ -3,7 +3,7 @@ import gc
 import random
 import string
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 import traceback
 import asyncio
@@ -41,7 +41,8 @@ async def json_release(client: Client, message: Message):
     
         with open(filepath) as f:
             data = json.load(f) 
-    
+        
+
         GLOBAL_DATA = []
         for item in data:
             GLOBAL_DATA.append({
@@ -52,6 +53,8 @@ async def json_release(client: Client, message: Message):
                 "preview_images_urls": item["preview_images_urls"],
                 "video_url": item["video_url"]
             })
+        
+        now = datetime.now() # date time for the schedule post
 
         for item in GLOBAL_DATA:
             url = item["url"]
@@ -110,6 +113,8 @@ async def json_release(client: Client, message: Message):
                 f"<blockquote>• Genres: {genre_text}</blockquote>\n"
                 f"<blockquote>ᴘʀᴏᴠɪᴅᴇᴅ ʙʏ <a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
             )
+
+            schedule_time = now + timedelta(hours=5)
             
             post = await client.send_photo(
                 chat_id=POST_CHANNEL_ID,
@@ -117,7 +122,8 @@ async def json_release(client: Client, message: Message):
                 caption=caption,
                 reply_markup=buttons,
                 parse_mode=ParseMode.HTML,
-                has_spoiler=True
+                has_spoiler=True,
+                schedule_date=schedule_time
             ) 
             
             await save_processed({
