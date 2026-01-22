@@ -116,7 +116,7 @@ async def json_release(client: Client, message: Message):
 
             schedule_time = now + timedelta(hours=5)
             
-            post = await Bot.user.send_photo(
+            post = await client.user.send_photo(
                 chat_id=POST_CHANNEL_ID,
                 photo=thumbnail_path,
                 caption=caption,
