@@ -9,7 +9,7 @@ from datetime import datetime
 import pyrogram.utils
 pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
-from config import API_HASH, APP_ID, LOGGER, TG_BOT_TOKEN, TG_BOT_WORKERS, DB_CHANNEL_ID, PORT
+from config import API_HASH, APP_ID, LOGGER, TG_BOT_TOKEN, TG_BOT_WORKERS, DB_CHANNEL_ID, PORT, SESSION
 
 class Bot(Client):
     def __init__(self):
@@ -23,11 +23,20 @@ class Bot(Client):
             workers=TG_BOT_WORKERS,
             bot_token=TG_BOT_TOKEN
         )
-        self.LOGGER = LOGGER
+        self.LOGGER = LOGGER 
+
+        self.user = Client(
+            session_string=SESSION,
+            api_hash=API_HASH,
+            api_id=APP_ID
+        )
 
     async def start(self):
-        await super().start()
-        usr_bot_me = await self.get_me()
+        await super().start() 
+        await self.user.start()
+        user_info = await self.get_me()
+        bot_info = await self.user.get_me()
+        self.LOGGER(__name__).info(f"Bot: @{user_info.username}, User: @{bot_info.username}")
         self.uptime = datetime.now()
 
         try:
@@ -51,7 +60,8 @@ class Bot(Client):
                                                          
  
                                           """)
-        self.username = usr_bot_me.username
+
+
         # web-response
         app = web.AppRunner(await web_server())
         await app.setup()
