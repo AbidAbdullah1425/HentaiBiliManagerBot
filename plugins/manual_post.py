@@ -26,7 +26,8 @@ async def manual_post(client, message):
             photo=post["cover"],
             caption=post["caption"],
             reply_markup=markup,
-            parse_mode=ParseMode.HTML
+            parse_mode=ParseMode.HTML,
+            has_spoiler=True
         )
         await delete_post(post["_id"])
         await message.reply_text("✅ Post sent manually and removed from queue.")

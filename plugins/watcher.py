@@ -35,6 +35,7 @@ async def watcher_loop(client):
                 caption=post["caption"],
                 reply_markup=markup,
                 parse_mode=ParseMode.HTML,
+                has_spoiler=True
             )
 
             # Remove from DB
