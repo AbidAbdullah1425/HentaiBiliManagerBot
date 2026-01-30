@@ -13,14 +13,13 @@ from pyrogram.types import Message
 from pyrogram import Client, filters
 from pyrogram.enums import ParseMode
 import json
-from database.database import is_processed, save_processed
+from database.database import is_processed, save_processed, add_post
 from bot import Bot
 from config import OWNER_ID, DOWNLOAD_DIR, CREDIT, DB_CHANNEL_ID, POST_CHANNEL_ID, LOG_CHANNEL_ID, LOGGER, NO_THUMB, GENRE_EMOJIS
 from plugins.download import download, download_thumb
 from plugins.upload import upload
 from plugins.link_gen import link_gen
 from plugins.ffmpeg_thumb import generate_video_thumbnail 
-
 
 logger = LOGGER("join_release.py")
 
@@ -30,7 +29,6 @@ logger = LOGGER("join_release.py")
 )
 async def json_release(client: Client, message: Message):
     # Default Values
-    thumbnail_path = None
     result = None
     download_msg = None
     status_msg = None
@@ -55,14 +53,13 @@ async def json_release(client: Client, message: Message):
                 "video_url": item["video_url"]
             })
         
-        now = datetime.now() # date time for the schedule post
 
         for item in GLOBAL_DATA:
             url = item["url"]
             studio = item["studio"]
             genres = item["genres"]
             genre_text = ", ".join(f"{GENRE_EMOJIS.get(g, '🧤')} {g}" for g in genres)
-            cover = item["cover"]
+            cover = item.get("cover") or None
             preview_images_urls = item["preview_images_urls"]
             video_url = item["video_url"]
             if await is_processed(url):
@@ -78,7 +75,7 @@ async def json_release(client: Client, message: Message):
                 await message.reply_text(f"Download Failed! {result}")
                 continue
     
-            # Thumbnail Download 
+            '''# Thumbnail Download 
             status_msg = await message.reply_text("🖼️ Downloading Thumbnail!")
             thumbnail_path = await download_thumb(cover) 
             if thumbnail_path:
@@ -86,7 +83,8 @@ async def json_release(client: Client, message: Message):
             else:
                 await status_msg.edit("❌ Thumbnail Generation Failed!")
                 thumbnail_path = NO_THUMB
-                logger.error(f"thumbnail_path = {thumbnail_path}")
+                logger.error(f"thumbnail_path = {thumbnail_path}")'''
+
         
             # Upload
             upload_msg = await message.reply_text("📤 Upload Initializing...")
@@ -104,9 +102,9 @@ async def json_release(client: Client, message: Message):
                 continue
         
             # Post to main channel
-            if not thumbnail_path or not os.path.exists(thumbnail_path):
+            if cover is None:
                 logger.error("Thumbnail not found, using default.")
-                thumbnail_path = NO_THUMB
+                cover = NO_THUMB
            
             caption = (
                 f"<blockquote><i>{title}</blockquote></i>\n\n"
@@ -115,17 +113,36 @@ async def json_release(client: Client, message: Message):
                 f"<blockquote>ᴘʀᴏᴠɪᴅᴇᴅ ʙʏ <a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
             )
 
-            schedule_time = now + timedelta(hours=5)
             
-            post = await client.user.send_photo(
+            '''post = await client.user.send_photo(
                 chat_id=POST_CHANNEL_ID,
                 photo=thumbnail_path,
                 caption=caption,
                 reply_markup=buttons,
                 parse_mode=ParseMode.HTML,
                 has_spoiler=True,
-                schedule_date=schedule_time
-            ) 
+            )'''
+
+            post_data = {
+                "title": title,
+                "cover": cover or NO_THUMB,   # store default if cover is None
+                "caption": (
+                    f"<blockquote><i>{title}</blockquote></i>\n\n"
+                    f"<blockquote>• Studio: {studio}</blockquote>\n"
+                    f"<blockquote>• Genres: {genre_text}</blockquote>\n"
+                    f"<blockquote>ᴘʀᴏᴠɪᴅᴇᴅ ʙʏ <a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
+                ),
+                "buttons": buttons
+            }
+
+            try:
+                save_waiting_post = await add_post(post_data)
+            except Exception as e:
+                logger.error(f"Failed to save post to DB: {e}")
+                raise
+
+   
+
             
             await save_processed({
                 "url": url,
@@ -135,19 +152,18 @@ async def json_release(client: Client, message: Message):
                 "cover": cover,
                 "video_url": video_url,
                 "preview_images_urls": preview_images_urls,
-                "media_id": db_msg.id,
-                "post_id": post.id
+                "media_id": db_msg.id#,
+                #"post_id": post.id
             })
             
             # Cleanup
-            for path in [thumbnail_path, result]:
-                if path and path != NO_THUMB and os.path.exists(path):
+            for path in [result]:
+                if path and os.path.exists(path):
                     try:
                         os.remove(path)
                         logger.info(f"Removed file: {path}")
                     except Exception as e:
                         logger.error(f"Failed cleanup {path}: {e}")
-
             for msg in [download_msg, status_msg, upload_msg]:
                     if msg:
                         try:

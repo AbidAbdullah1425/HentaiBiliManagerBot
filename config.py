@@ -12,8 +12,6 @@ from logging.handlers import RotatingFileHandler
 #Bot token @Botfather
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "0")
 
-SESSION = os.environ.get("SESSION", "0")
-
 #Your API ID from my.telegram.org
 APP_ID = int(os.environ.get("APP_ID", "26254064"))
 
@@ -117,7 +115,7 @@ GENRE_EMOJIS = {
 PORT = os.environ.get("PORT", "8080")
 
 #Database 
-DB_URI = os.environ.get("DB_URI", "mongodb+srv://teamprosperpay:AbidAbdullah199@cluster0.z93fita.mongodb.net/")
+DB_URI = os.environ.get("DB_URI", "")
 DB_NAME = os.environ.get("DATABASE_NAME", "HentaiBiliBot")
 
 #force sub channel id, if you want enable force sub

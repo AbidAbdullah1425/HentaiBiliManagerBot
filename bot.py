@@ -1,15 +1,16 @@
 from aiohttp import web
 from plugins import web_server
-
+import asyncio
 import pyromod.listen
 from pyrogram import Client
 from pyrogram.enums import ParseMode
+from plugins.watcher import watcher_loop 
 import sys
 from datetime import datetime
 import pyrogram.utils
 pyrogram.utils.MIN_CHANNEL_ID = -1009147483647
 
-from config import API_HASH, APP_ID, LOGGER, TG_BOT_TOKEN, TG_BOT_WORKERS, DB_CHANNEL_ID, PORT, SESSION
+from config import API_HASH, APP_ID, LOGGER, TG_BOT_TOKEN, TG_BOT_WORKERS, DB_CHANNEL_ID, PORT
 
 class Bot(Client):
     def __init__(self):
@@ -24,22 +25,13 @@ class Bot(Client):
             bot_token=TG_BOT_TOKEN
         )
         self.LOGGER = LOGGER 
-
-        self.user = Client(
-            name="User",
-            session_string=SESSION,
-            api_hash=API_HASH,
-            api_id=APP_ID
-        )
+        self.watcher_time = 6
 
     async def start(self):
         await super().start() 
-        await self.user.start()
         user_info = await self.get_me()
-        bot_info = await self.user.get_me()
-        self.LOGGER(__name__).info(f"Bot: @{user_info.username}, User: @{bot_info.username}")
+        self.LOGGER(__name__).info(f"Bot: @{user_info.username}")
         self.uptime = datetime.now()
-
         try:
             db_channel = await self.get_chat(DB_CHANNEL_ID)
             self.db_channel = db_channel
@@ -53,6 +45,9 @@ class Bot(Client):
 
         self.set_parse_mode(ParseMode.HTML)
         self.LOGGER(__name__).info(f"Bot Running..!\n\nCreated by \nhttps://t.me/codeflix_bots")
+        # Start the watcher task
+        self.LOGGER(__name__).info("Starting watcher task...")
+        asyncio.create_task(watcher_loop(self))
         self.LOGGER(__name__).info(f"""       
   ___ ___  ___  ___ ___ _    _____  _____  ___ _____ ___ 
  / __/ _ \|   \| __| __| |  |_ _\ \/ / _ )/ _ \_   _/ __|
