@@ -1,7 +1,8 @@
 from pyrogram import Client, filters
 from pyrogram.enums import ParseMode
 from database.database import get_oldest_post, delete_post, get_all_posts
-from config import OWNER_ID, POST_CHANNEL_ID
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from config import OWNER_ID, POST_CHANNEL_ID, CNL_BUTTON_NAME
 
 @Client.on_message(filters.user(OWNER_ID) & filters.command("m_post"))
 async def manual_post(client, message):
@@ -10,13 +11,21 @@ async def manual_post(client, message):
     if not post:
         await message.reply_text("No pending posts in the queue.")
         return
+    
+    markup = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(CNL_BUTTON_NAME, url=post.get("start_link"))
+                    ]
+                ]
+            )
 
     try:
         await client.send_photo(
             chat_id=POST_CHANNEL_ID,
             photo=post["cover"],
             caption=post["caption"],
-            reply_markup=post.get("buttons"),
+            reply_markup=markup,
             parse_mode=ParseMode.HTML
         )
         await delete_post(post["_id"])

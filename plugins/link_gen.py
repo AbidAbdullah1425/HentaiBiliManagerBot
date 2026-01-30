@@ -1,7 +1,9 @@
 import base64
 from pyrogram import Client
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
-from config import BOT_USERNAME, DB_CHANNEL_ID, CNL_BUTTON_NAME
+from config import BOT_USERNAME, DB_CHANNEL_ID, CNL_BUTTON_NAME, LOGGER
+
+logger = LOGGER(__name__)
 
 
 def encode(text: str) -> str:
@@ -13,7 +15,7 @@ async def link_gen(db_msg):
     encoded = encode(f"get-{db_msg.id * abs(DB_CHANNEL_ID)}")
     start_link = f"https://t.me/{BOT_USERNAME}?start={encoded}"
     buttons = InlineKeyboardMarkup([[InlineKeyboardButton(CNL_BUTTON_NAME, url=start_link)]])
-    return buttons
+    return buttons, start_link
   except Exception as e:
     logger.error(f"Link Generation Failed! {e}")
     return None

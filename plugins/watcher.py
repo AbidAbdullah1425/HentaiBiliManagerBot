@@ -1,6 +1,7 @@
 import asyncio
 from pyrogram.enums import ParseMode
-from config import LOGGER, POST_CHANNEL_ID, OWNER_ID
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
+from config import LOGGER, POST_CHANNEL_ID, OWNER_ID, CNL_BUTTON_NAME
 from database.database import get_oldest_post, delete_post
 
 
@@ -19,12 +20,20 @@ async def watcher_loop(client):
                 logger.info("No pending posts. Watcher stopped.")
                 break
 
+            markup = InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(CNL_BUTTON_NAME, url=post.get("start_link"))
+                    ]
+                ]
+            )
+
             # Send post
             await client.send_photo(
                 chat_id=POST_CHANNEL_ID,
                 photo=post["cover"],
                 caption=post["caption"],
-                reply_markup=post.get("buttons"),
+                reply_markup=markup,
                 parse_mode=ParseMode.HTML,
             )
 

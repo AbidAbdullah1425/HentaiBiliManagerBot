@@ -59,7 +59,7 @@ async def json_release(client: Client, message: Message):
             studio = item["studio"]
             genres = item["genres"]
             genre_text = ", ".join(f"{GENRE_EMOJIS.get(g, '🧤')} {g}" for g in genres)
-            cover = item.get("cover") or None
+            cover = (item.get("cover") or NO_THUMB).strip()
             preview_images_urls = item["preview_images_urls"]
             video_url = item["video_url"]
             if await is_processed(url):
@@ -94,7 +94,7 @@ async def json_release(client: Client, message: Message):
                 continue
         
             # Link generation
-            buttons = await link_gen(db_msg)
+            buttons, start_link = await link_gen(db_msg)
             if buttons:
                 logger.info("Link GENERATED!")
             else:
@@ -132,7 +132,7 @@ async def json_release(client: Client, message: Message):
                     f"<blockquote>• Genres: {genre_text}</blockquote>\n"
                     f"<blockquote>ᴘʀᴏᴠɪᴅᴇᴅ ʙʏ <a href='https://t.me/+O7PeEMZOAoMzYzVl'>⌘ ʜᴇɴᴛᴀɪᴄɪsᴘ</a></blockquote>"
                 ),
-                "buttons": buttons
+                "start_link": start_link
             }
 
             try:
