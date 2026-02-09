@@ -26,6 +26,7 @@ class Bot(Client):
         )
         self.LOGGER = LOGGER 
         self.watcher_time = 6
+        self.watcher_task = None
 
     async def start(self):
         await super().start() 
