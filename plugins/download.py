@@ -32,7 +32,7 @@ async def _download(url, filename, message):
         timeout = aiohttp.ClientTimeout(
             total=None,
             sock_connect=30,
-            sock_read=60
+            sock_read=180
         )
 
         async with aiohttp.ClientSession(timeout=timeout) as session:
