@@ -28,67 +28,61 @@ async def _download(url, filename, message):
         status = "DOWNLOADING..."
         start = time.time()
         filepath = os.path.join(DOWNLOAD_DIR, filename)
+
         timeout = aiohttp.ClientTimeout(
-            sock_read=70,
-            sock_connect=70
+            total=None,
+            sock_connect=30,
+            sock_read=60
         )
 
         async with aiohttp.ClientSession(timeout=timeout) as session:
             async with session.get(url) as resp:
 
-                # URL invalid / expired
                 if resp.status != 200:
                     return False, f"Expired or Invalid URL {resp.status}"
 
-                # No length = dead/expired URL
                 total = int(resp.headers.get("Content-Length", 0))
                 if total == 0:
                     return False, "Content Length = 0"
 
                 downloaded = 0
-                last_data = time.time()
+                chunk_size = 1024 * 1024  # 1MB chunks
+                last_update = 0
 
-                # Start writing file
-                with open(filepath, "wb") as f:
-                    async for chunk in resp.content.iter_chunked(1024 * 256):
+                async with aiofiles.open(filepath, "wb") as f:
+                    async for chunk in resp.content.iter_chunked(chunk_size):
 
                         if not chunk:
-                            if time.time() - last_data > 180:
-                                return False, "Download Stalled! (no data)."
-                            await asyncio.sleep(0.5)
                             continue
 
-                        f.write(chunk)
+                        await f.write(chunk)
                         downloaded += len(chunk)
-                        last_data = time.time()
 
-                        # Progress bar
-                        await progress_bar(
-                            current=downloaded,
-                            total=total,
-                            start_time=start,
-                            status=status,
-                            message=message
-                        )
+                        # update progress every 2 seconds only
+                        now = time.time()
+                        if now - last_update > 2:
+                            await progress_bar(
+                                current=downloaded,
+                                total=total,
+                                start_time=start,
+                                status=status,
+                                message=message
+                            )
+                            last_update = now
 
-                await message.edit("🌆 Download Completed")
-
-        # If video too small = invalid or broken
+        # validate file size
         if os.path.getsize(filepath) < 100 * 1024:
             os.remove(filepath)
-            return False, "Download failed: file too small (invalid video)"
+            return False, "Download failed: file too small"
 
-        # Detect extension
+        # detect extension
         kind = filetype.guess(filepath)
-        ext = "." + kind.extension if kind else ".mp4"
+        ext = "." + kind.extension if kind else ""
 
-        # Rename file if extension missing
         if ext and not filename.endswith(ext):
-            new_name = filename + ext
-            new_path = os.path.join(DOWNLOAD_DIR, new_name)
+            new_path = filepath + ext
             os.rename(filepath, new_path)
             filepath = new_path
-            logger.error(f"FileName: {new_name}\nFilePath: {filepath}")
 
         return True, filepath
 
