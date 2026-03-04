@@ -70,7 +70,7 @@ async def json_release(client: Client, message: Message):
          
             # Download
             download_msg = await message.reply_text("📩 Download Initializing...")
-            success, result = await download(video_url, title, download_msg)
+            success, result = await download(video_url, title, download_msg, referer=url)
             if not success:
                 await message.reply_text(f"Download Failed! {result}")
                 continue

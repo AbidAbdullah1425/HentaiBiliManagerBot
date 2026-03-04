@@ -12,6 +12,16 @@ logger = LOGGER("download_py")
 
 PROGRESS_UPDATE_INTERVAL = 3.0
 CHUNK_SIZE = 1024 * 1024
+DEFAULT_REQUEST_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/122.0.0.0 Safari/537.36"
+    ),
+    "Accept": "*/*",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Connection": "keep-alive",
+}
 
 
 async def download_thumb(url):
@@ -26,7 +36,7 @@ async def download_thumb(url):
     return save_path
 
 
-async def _download(url, filename, message):
+async def _download(url, filename, message, referer=None):
     filepath = os.path.join(DOWNLOAD_DIR, filename)
     state = TransferState(status="DOWNLOADING...")
     reporter = TelegramProgressReporter(
@@ -43,8 +53,12 @@ async def _download(url, filename, message):
             sock_read=300,
         )
 
+        headers = dict(DEFAULT_REQUEST_HEADERS)
+        if referer:
+            headers["Referer"] = referer
+
         async with aiohttp.ClientSession(timeout=timeout) as session:
-            async with session.get(url) as response:
+            async with session.get(url, headers=headers, allow_redirects=True) as response:
                 if response.status != 200:
                     return False, f"Expired or Invalid URL {response.status}"
 
@@ -70,9 +84,10 @@ async def _download(url, filename, message):
             return False, "Download failed: file too small (invalid video)"
 
         kind = filetype.guess(filepath)
-        ext = "." + kind.extension if kind else ""
+        ext = "." + kind.extension if kind else ".mp4"
 
         if ext and not filename.endswith(ext):
+            new_name = filename + ext
             new_path = filepath + ext
             os.rename(filepath, new_path)
             filepath = new_path
@@ -96,5 +111,5 @@ async def _download(url, filename, message):
         return False, str(exc)
 
 
-async def download(url, filename, message):
-    return await _download(url, filename, message)
+async def download(url, filename, message, referer=None):
+    return await _download(url, filename, message, referer=referer)
