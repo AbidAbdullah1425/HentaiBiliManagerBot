@@ -1,45 +1,56 @@
-from pyrogram import Client
-from config import DB_CHANNEL_ID, CREDIT
-from bot import Bot
-import os
-from plugins.progressbar import progress_bar
-import time
 import asyncio
+import os
+
+from pyrogram import Client
 from pyrogram.enums import ParseMode
 
+from config import CREDIT, DB_CHANNEL_ID
+from plugins.progressbar import TelegramProgressReporter, TransferState
+
+PROGRESS_UPDATE_INTERVAL = 3.0
 
 
-# send the file to db channel
-async def upload(Bot: Client, filepath, message):
+async def upload(bot: Client, filepath, message):
+    state = TransferState(status="UPLOADING...")
+    reporter = TelegramProgressReporter(
+        message=message,
+        state=state,
+        update_interval=PROGRESS_UPDATE_INTERVAL,
+    )
+    reporter_task = None
+
     try:
-      if not os.path.exists(filepath):
-          await message.reply_text(f"File NOT found! {filepath}")
-          raise FileNotFoundError(f"File NOT Found {filepath}")
+        if not os.path.exists(filepath):
+            await message.reply_text(f"File NOT found! {filepath}")
+            raise FileNotFoundError(f"File NOT Found {filepath}")
 
-      start = time.time()
+        reporter_task = asyncio.create_task(reporter.run())
 
-      async def prog(current, total):
-         await progress_bar(
-            current=current,
-            total=total,
-            start_time=start,
-            status="UPLOADING...",
-            message=message
-         )
+        async def prog(current, total):
+            state.set_progress(current=current, total=total)
 
+        send_vid = await bot.send_video(
+            chat_id=DB_CHANNEL_ID,
+            video=filepath,
+            caption=CREDIT,
+            parse_mode=ParseMode.HTML,
+            progress=prog,
+        )
 
-    
-      send_vid = await Bot.send_video(
-          chat_id=DB_CHANNEL_ID,
-          video=filepath,
-          caption=CREDIT,
-          parse_mode=ParseMode.HTML,
-          progress=prog
-      )
+        state.mark_done()
+        if reporter_task is not None:
+            reporter.stop()
+            await reporter_task
 
-      await message.edit("✌️ Upload Completed")
+        await message.edit_text("Upload Completed")
+        return True, send_vid
 
-
-      return True, send_vid
-    except Exception as e:
-        return False, str(e)
+    except Exception as exc:
+        state.mark_failed(str(exc))
+        if reporter_task is not None:
+            try:
+                reporter.stop()
+                await reporter_task
+            except Exception:
+                pass
+        return False, str(exc)

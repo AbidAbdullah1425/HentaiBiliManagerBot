@@ -1,101 +1,101 @@
 import asyncio
-import time
-import filetype
 import os
-import aiohttp
+
 import aiofiles
-from config import DB_CHANNEL_ID, POST_CHANNEL_ID, DOWNLOAD_DIR, CREDIT, LOGGER
-from plugins.progressbar import progress_bar
+import aiohttp
+import filetype
+
+from config import DOWNLOAD_DIR, LOGGER
+from plugins.progressbar import TelegramProgressReporter, TransferState
 
 logger = LOGGER("download_py")
 
+PROGRESS_UPDATE_INTERVAL = 3.0
+CHUNK_SIZE = 1024 * 1024
+
 
 async def download_thumb(url):
-    async with aiohttp.ClientSession() as s:
-        async with s.get(url) as r:
-            data = await r.read()
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            data = await response.read()
 
     save_path = os.path.join(DOWNLOAD_DIR, "thumb.jpg")
-
-    async with aiofiles.open(save_path, "wb") as f:
-        await f.write(data)
+    async with aiofiles.open(save_path, "wb") as file_obj:
+        await file_obj.write(data)
 
     return save_path
 
 
 async def _download(url, filename, message):
+    filepath = os.path.join(DOWNLOAD_DIR, filename)
+    state = TransferState(status="DOWNLOADING...")
+    reporter = TelegramProgressReporter(
+        message=message,
+        state=state,
+        update_interval=PROGRESS_UPDATE_INTERVAL,
+    )
+    reporter_task = None
+
     try:
-        status = "DOWNLOADING..."
-        start = time.time()
-        filepath = os.path.join(DOWNLOAD_DIR, filename)
         timeout = aiohttp.ClientTimeout(
-            sock_read=70,
-            sock_connect=70
+            total=None,
+            sock_connect=30,
+            sock_read=300,
         )
 
         async with aiohttp.ClientSession(timeout=timeout) as session:
-            async with session.get(url) as resp:
+            async with session.get(url) as response:
+                if response.status != 200:
+                    return False, f"Expired or Invalid URL {response.status}"
 
-                # URL invalid / expired
-                if resp.status != 200:
-                    return False, f"Expired or Invalid URL {resp.status}"
+                total_header = response.headers.get("Content-Length")
+                total = int(total_header) if total_header and total_header.isdigit() else None
+                if total and total > 0:
+                    state.total = total
 
-                # No length = dead/expired URL
-                total = int(resp.headers.get("Content-Length", 0))
-                if total == 0:
-                    return False, "Content Length = 0"
+                reporter_task = asyncio.create_task(reporter.run())
 
                 downloaded = 0
-                last_data = time.time()
-
-                # Start writing file
-                with open(filepath, "wb") as f:
-                    async for chunk in resp.content.iter_chunked(1024 * 256):
-
+                with open(filepath, "wb", buffering=CHUNK_SIZE) as file_obj:
+                    async for chunk in response.content.iter_chunked(CHUNK_SIZE):
                         if not chunk:
-                            if time.time() - last_data > 180:
-                                return False, "Download Stalled! (no data)."
-                            await asyncio.sleep(0.5)
                             continue
-
-                        f.write(chunk)
+                        file_obj.write(chunk)
                         downloaded += len(chunk)
-                        last_data = time.time()
+                        state.set_progress(downloaded, total)
 
-                        # Progress bar
-                        await progress_bar(
-                            current=downloaded,
-                            total=total,
-                            start_time=start,
-                            status=status,
-                            message=message
-                        )
-
-                await message.edit("🌆 Download Completed")
-
-        # If video too small = invalid or broken
         if os.path.getsize(filepath) < 100 * 1024:
             os.remove(filepath)
+            state.mark_failed("Download failed: file too small (invalid video)")
             return False, "Download failed: file too small (invalid video)"
 
-        # Detect extension
         kind = filetype.guess(filepath)
         ext = "." + kind.extension if kind else ".mp4"
 
-        # Rename file if extension missing
         if ext and not filename.endswith(ext):
             new_name = filename + ext
             new_path = os.path.join(DOWNLOAD_DIR, new_name)
             os.rename(filepath, new_path)
             filepath = new_path
-            logger.error(f"FileName: {new_name}\nFilePath: {filepath}")
+            logger.info("FileName: %s | FilePath: %s", new_name, filepath)
 
+        state.mark_done()
+        if reporter_task is not None:
+            reporter.stop()
+            await reporter_task
+        await message.edit_text("Download Completed")
         return True, filepath
 
-    except Exception as e:
-        return False, str(e)
+    except Exception as exc:
+        state.mark_failed(str(exc))
+        if reporter_task is not None:
+            try:
+                reporter.stop()
+                await reporter_task
+            except Exception:
+                pass
+        return False, str(exc)
 
 
-# Wrapper
 async def download(url, filename, message):
     return await _download(url, filename, message)
