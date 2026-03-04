@@ -70,11 +70,10 @@ async def _download(url, filename, message):
             return False, "Download failed: file too small (invalid video)"
 
         kind = filetype.guess(filepath)
-        ext = "." + kind.extension if kind else ".mp4"
+        ext = "." + kind.extension if kind else ""
 
         if ext and not filename.endswith(ext):
-            new_name = filename + ext
-            new_path = os.path.join(DOWNLOAD_DIR, new_name)
+            new_path = filepath + ext
             os.rename(filepath, new_path)
             filepath = new_path
             logger.info("FileName: %s | FilePath: %s", new_name, filepath)
