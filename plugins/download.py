@@ -13,7 +13,7 @@ logger = LOGGER("download_py")
 PROGRESS_UPDATE_INTERVAL = float(os.environ.get("PROGRESS_UPDATE_INTERVAL", "8"))
 CHUNK_SIZE = 1024 * 1024
 # CHANGE: Minimum size guard to prevent saving expired/HTML/error payloads.
-MIN_VALID_CONTENT_LENGTH = int(os.environ.get("MIN_VALID_DOWNLOAD_BYTES", str(100 * 1024)))  # default 100KB
+MIN_VALID_CONTENT_LENGTH = int(os.environ.get("MIN_VALID_DOWNLOAD_BYTES", str(1024 * 1024)))  # default 1MB
 DEFAULT_REQUEST_HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -44,8 +44,12 @@ def _validate_download_response(response: aiohttp.ClientResponse) -> int | None:
         raise RuntimeError(f"Expired or Invalid URL {response.status}")
 
     content_type = (response.headers.get("Content-Type") or "").lower()
-    # CHANGE: Many CDNs send videos as application/octet-stream.
-    if ("video" not in content_type) and ("application/octet-stream" not in content_type):
+    # CHANGE: Many CDNs send videos as octet-stream (sometimes misreported as "octet/stream").
+    is_video = "video" in content_type
+    is_octet_stream = ("octet-stream" in content_type) or ("octet/stream" in content_type) or (
+        ("octet" in content_type) and ("stream" in content_type)
+    )
+    if not (is_video or is_octet_stream):
         raise RuntimeError(f"Invalid Content-Type: {response.headers.get('Content-Type')}")
 
     content_length_header = response.headers.get("Content-Length")

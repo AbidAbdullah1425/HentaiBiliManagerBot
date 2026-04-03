@@ -62,8 +62,20 @@ async def json_release(client: Client, message: Message):
 
         # CHANGE: Parallelize ONLY the download step to prevent link-expiry failures.
         # Uploads/DB writes remain sequential and unchanged.
-        download_jobs = []
+        #
+        # CHANGE: Build a pending list first so we can show "(current/total)" counters on init messages.
+        pending_items = []
         for item in GLOBAL_DATA:
+            url = item["url"]
+            if await is_processed(url):
+                logger.info(f"Already processed skiped {url}")
+                await message.reply_text(f"Already processed skiped {url}", disable_web_page_preview=True)
+                continue
+            pending_items.append(item)
+
+        download_jobs = []
+        total_pending = len(pending_items)
+        for idx, item in enumerate(pending_items, 1):
             url = item["url"]
             studio = item["studio"]
             genres = item["genres"]
@@ -71,14 +83,11 @@ async def json_release(client: Client, message: Message):
             cover = (item.get("cover") or NO_THUMB).strip()
             preview_images_urls = item["preview_images_urls"]
             video_url = item["video_url"]
-            if await is_processed(url):
-                logger.info(f"Already processed skiped {url}")
-                await message.reply_text(f"Already processed skiped {url}", disable_web_page_preview=True)
-                continue
             title = extract_title(url) # title of the media
 
             # Download (scheduled now, awaited later)
-            download_msg = await message.reply_text("📩 Download Initializing...")
+            # CHANGE: Include "(current/total)" counter for visibility.
+            download_msg = await message.reply_text(f"📩 Download Initializing... ({idx}/{total_pending})")
 
             download_jobs.append({
                 "url": url,
